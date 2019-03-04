@@ -8,13 +8,13 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
   length snp$20;
 
-  /*  delimter is a single spaec for this raw data, not a tab*/
+/* delimter is a single space for this raw data, not a tab*/
   infile "E:\John Li data\gwas-download-master\BMI\bmi_giant_ukbb_meta_analysis.txt"
         dlm=' ' TRUNCOVER DSD firstobs=2;
  
-  * read data in input order;
+/* read data in input order. Note that $ refers to character variables; without $ refers to numeric. */
   input  chr$
-  		 bp
+  	 bp
          SNP$
          Tested_Allele$
          Other_Allele $
@@ -40,8 +40,10 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
          low_confidence_variant$
          n_complete_samples
          AC ytx	beta se	tstat p_value;
-
+  
+/*Extract first value of delimited variable by : */
   chr    = scan(variant, 1, ':');
+/* input converts the variable from characters to numeric. */
   bp     = input(scan(variant, 2, ':'),32.);
   trait  = 'ukbb';
 run;
@@ -63,7 +65,7 @@ run;
 
 
 
-
+/* Push tables to SQL Server */
 proc datasets library = db;
 	append base = db.giant data=sasdata.giant;
 run;
