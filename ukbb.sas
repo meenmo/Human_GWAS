@@ -1,40 +1,31 @@
 libname sasdata "E:\SAS\SAS_Library";
 
-/*proc sql;*/
-/*	connect to odbc (required="driver=sql server native client 11.0;*/
-/*					 		   seerver=PARKSLAB;*/
-/*							   Trusted_Connection=Yes;*/
-/*							   Database=Human_GWAS;");*/
-
 %macro ukbb(dataset, trait, path);
-data &dataset(keep = chr bp beta pval trait);
- infile &path	delimiter='09'x TRUNCOVER DSD firstobs=2;
+	data &dataset(keep = chr bp beta p_valUE trait);
 
-  %* set length and informat and output order;
-  informat chr $5.
-		   bp  8.
-           MUTANT ORIG $70.
-           MINOR_ALLELE $2.
-           MINOR_AF EXPECTED_CASE_MINOR_AC 8.
-           LOW_CONFIDENCE_VARIANT  $5.
-           N_COMPLETE_SAMPLES AC YTX beta SE TSTAT PVAL 8.
-           VARIANT $70.
-		   trait $20.;
+	length variant $100;
 
-  %* read data in input order;
-  input  VARIANT 
-		 MINOR_ALLELE 
-		 MINOR_AF
-         EXPECTED_CASE_MINOR_AC 
-		 LOW_CONFIDENCE_VARIANT
-         N_COMPLETE_SAMPLES  
-         AC YTX ( beta SE TSTAT PVAL ) (:?? 32.) ;
+	infile &path delimiter='09'x TRUNCOVER DSD firstobs=2;
 
-  drop VARIANT ;
+	* read data in input order;
+	input  variant $
+		 minor_allele $
+		 minor_AF	
+		 expected_case_minor_AC	
+		 low_confidence_variant	$
+		 n_complete_samples	
+		 AC	
+		 ytx	
+		 beta	
+		 se	
+		 tstat	
+		 p_value
+		 ;
 
-  chr    = scan(VARIANT, 1,':');
-  bp     = input(scan(VARIANT, 2,':'),?? 32.);
-  trait  = &trait;
+	chr    = scan(VARIANT, 1,':');
+	bp     = input(scan(VARIANT, 2,':'), 32.);
+	trait  = &trait;
+
 run;
 %mend ukbb;
 
@@ -44,8 +35,9 @@ run;
 %ukbb(female,'self_reported_high_cholesterol_female',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\self_reported_high_cholesterol_female.tsv")
 %ukbb(both,'self_reported_high_cholesterol_both',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\selfreported_high_cholesterol_both_sexes.tsv")
 
-data sasdata.ukbb_statin(rename = (PVAL=p_value));
-	set atorvastatin rosuvastatin pravastatin fluvastatin sivastatin;
+data sasdata.Lipid_UKBB_lipid_trait;
+	length chr$2;
+	set medicat male female both;
 run;
 
 %ukbb(atorvastatin,'atorvastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\atorvastatin.both_sexes.tsv")
@@ -54,35 +46,9 @@ run;
 %ukbb(fluvastatin, 'fluvastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\fluvastatin.both_sexes.tsv")
 %ukbb(sivastatin,  'sivastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\sivastatin_both_sexes.tsv")
 
-data sasdata.ukbb_statin(rename = (PVAL=p_value));
+data sasdata.Lipid_ukbb_statin_usage;
+	length chr$2;
 	set atorvastatin rosuvastatin pravastatin fluvastatin sivastatin;
 run;
 
-
-proc sql;
-   connect to odbc as db (required="driver=sql server native client 11.0;
-							 	    seerver=PARKSLAB;
-								    Trusted_Connection=Yes;
-								    Database=Human_GWAS;");
-
-	execute(drop table ukbb_statin) by db;
-	execute(create table ukbb_statin (
-		    chr varchar(2),
-		    bp numeric(18),
-		    beta float,
-		    p_value float,
-		    trait varchar(20) 
-			)) by db;
-	execute(insert into ukbb_statin
-										) by db;
-quit;
-
-
-
-libname db odbc noprompt = "server=PARKSLAB;DRIVER=SQL Server Native Client 11.0;						  
-							  Trusted_Connection=yes" DATABASE = Human_GWAS libname schema = dbo;;
-
-proc datasets library = db;
-	append base = db.ukbb_statin data=sasdata.ukbb_statin;
-run;
 
