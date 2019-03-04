@@ -1,28 +1,21 @@
-/*libname GWAS odbc noprompt = "server=PARKSLAB;DRIVER=SQL Server Native Client 11.0;						*/
-/*		Trusted_Connection=yes" DATABASE = PARKSLAB schema = dbo;*/
-
-libname sasdata "E:\SAS_Library";
+libname sasdata "E:\SAS\SAS_Library";
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
 
 %macro cleanup_raw(path, dataset, trait);
 data &dataset (keep = rsid beta p_value trait chr bp);
-	infile &path delimiter='09'x TRUNCOVER DSD firstobs=2;
-	* set length and informat and output order;
-  	informat chr $2.
-		   	 bp 8.
-			 SNP_hg18 $1.
-			 SNP_hg19 $50.
-			 rsid $11.
-		     A1 A2 $1.
-		     beta se p_value N Freq_A1_1000G_EUR 8.
- 		     trait $3.;
+  length SNP_hg19 rsid$20;
+  infile &path delimiter='09'x TRUNCOVER DSD firstobs=2;
 
   * read data in input order;
-  input    SNP_hg18
-		   SNP_hg19
-		   rsid
-		   A1 A2
+  input    SNP_hg18$
+		   SNP_hg19$
+		   rsid$
+		   A1$ A2$
 		   beta se N p_value Freq_A1_1000G_EUR
- 		   trait ;
+		   ;
 
   trait = &trait;
 
@@ -41,13 +34,20 @@ run;
 %cleanup_raw("E:\HUMAN_GWAS_GLGC_DATA\jointGwasMc_TG.txt", TG, 'TG')
 
 data sasdata.GLGC;
+	length chr $2;
 	set HDL LDL TC TG;
-	rsid = trim(rsid);
-	length chr $2 bp  8;
+	rsid = trim(rsid);	
 run;
 
-proc export data=sasdata.GLGC
-    outfile="E:\SAS_Export\GLGC.csv"
-    dbms=csv
-    replace;
+proc sql;
+   connect to odbc as db (required="driver=sql server native client 11.0;
+							 	    seerver=PARKSLAB;
+								    Trusted_Connection=Yes;
+								    Database=Human_GWAS;");
+
+	execute(drop table glgc) by db;
+quit;
+
+proc datasets library = db;
+	append base = db.GLGC data=sasdata.GLGC;
 run;
