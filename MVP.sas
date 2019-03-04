@@ -6,7 +6,7 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
 
 %macro mvp(dataset, trait, path);
 data &dataset(keep = chr bp beta p_value trait);
- infile &path	delimiter='09'x TRUNCOVER DSD firstobs=23;
+	infile &path delimiter='09'x TRUNCOVER DSD firstobs=23;
 
   %* set length and informat and output order;
   informat chr $2.
@@ -16,27 +16,27 @@ data &dataset(keep = chr bp beta p_value trait);
   %* read data in input order;
   input  ID
      	 Analysis_ID
-		 rsid
-		 p_value
-		 Rank
-	     Plot
-	     chr
-	     bp
-	     Submitted_SNP_ID
-	     ss2rs
-	     rs2genome
-	     Allele1
-	     Allele2
-	     Minor_allele
-	     pHWE
-	     Call_Rate
-	     beta
-	     SE
-	     R_Squared
-	     Coded_Allele
-	     Sample_size
-	     Bin_ID
-		 ;
+	 rsid
+	 p_value
+	 Rank
+         Plot
+         chr
+         bp
+         Submitted_SNP_ID
+         ss2rs
+         rs2genome
+         Allele1
+         Allele2
+         Minor_allele
+         pHWE
+         Call_Rate
+         beta
+         SE
+         R_Squared
+         Coded_Allele
+         Sample_size
+         Bin_ID
+	 ;
 
   trait  = &trait;
 run;
