@@ -1,9 +1,4 @@
 libname sasdata "E:\SAS\SAS_Library";
-libname db odbc noprompt="driver=SQL Server Native Client 11.0;
-                          server=PARKSLAB;
-                          database=HUMAN_GWAS;
-                          Trusted_Connection=yes" schema=dbo;
-
 
 %macro EA(path, dataset, trait);
 data &dataset (keep = rsid beta p_value trait chr bp);
@@ -22,7 +17,7 @@ data &dataset (keep = rsid beta p_value trait chr bp);
 		   ;
 
   trait = &trait;
-  
+
   /*split into chr and bp by delimeter :*/
   chr = compress(scan(snp_hg19, 1, ':'),'chr');
   bp  = input(scan(snp_hg19, 2, ':'),32.);
@@ -38,8 +33,7 @@ run;
 
 
 /*Merge into a single table*/
-data sasdata.EA;
+data sasdata.East_Asian;
 	length chr $2;
 	set EA_HDL EA_LDL EA_TC EA_TG;
 run;
-

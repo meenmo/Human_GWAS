@@ -1,12 +1,8 @@
 libname sasdata "E:\SAS\SAS_Library";
-libname db odbc noprompt="driver=SQL Server Native Client 11.0;
-                          server=PARKSLAB;
-                          database=HUMAN_GWAS;
-                          Trusted_Connection=yes" schema=dbo;
 
 %macro mvp(dataset, trait, path);
 data &dataset(keep = chr bp beta p_value trait);
-	
+
 	infile &path delimiter='09'x TRUNCOVER DSD firstobs=23;
 
 	/*read data in input order*/
@@ -47,4 +43,3 @@ run;
 data sasdata.mvp_lipid;
 	set mvp_hdl mvp_ldl mvp_tc mvp_tg;
 run;
-

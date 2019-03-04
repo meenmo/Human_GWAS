@@ -29,8 +29,7 @@ run;
 
 
 /*merge into a single table*/
-data sasdata.EU;
+data sasdata.European;
 	length chr$2;
 	set EU_HDL EU_LDL EU_TC EU_TG;
 run;
-

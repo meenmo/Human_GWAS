@@ -10,15 +10,15 @@ libname sasdata "E:\SAS\SAS_Library";
 	* read data in input order;
 	input  variant $
 		 minor_allele $
-		 minor_AF	
-		 expected_case_minor_AC	
+		 minor_AF
+		 expected_case_minor_AC
 		 low_confidence_variant	$
-		 n_complete_samples	
-		 AC	
-		 ytx	
-		 beta	
-		 se	
-		 tstat	
+		 n_complete_samples
+		 AC
+		 ytx
+		 beta
+		 se
+		 tstat
 		 p_value
 		 ;
 
@@ -40,6 +40,7 @@ data sasdata.Lipid_UKBB_lipid_trait;
 	set medicat male female both;
 run;
 
+
 %ukbb(atorvastatin,'atorvastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\atorvastatin.both_sexes.tsv")
 %ukbb(rosuvastatin,'rosuvastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\rosuvastatin.both_sexes.tsv")
 %ukbb(pravastatin, 'pravastatin',"E:\John Li data\gwas-download-master\UKBB_lipid_and_statin_neile_lab\pravastatin_both_sexes.tsv")
@@ -50,5 +51,3 @@ data sasdata.Lipid_ukbb_statin_usage;
 	length chr$2;
 	set atorvastatin rosuvastatin pravastatin fluvastatin sivastatin;
 run;
-
-

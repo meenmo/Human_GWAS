@@ -11,7 +11,7 @@ data sasdata.giant(keep = chr bp rsid beta p_value trait);
 /* delimter is a single space for this raw data, not a tab*/
   infile "E:\John Li data\gwas-download-master\BMI\bmi_giant_ukbb_meta_analysis.txt"
         dlm=' ' TRUNCOVER DSD firstobs=2;
- 
+
 /* read data in input order. Note that $ refers to character variables; without $ refers to numeric. */
   input  chr$
   	 bp
@@ -40,7 +40,7 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
          low_confidence_variant$
          n_complete_samples
          AC ytx	beta se	tstat p_value;
-  
+
 /*Extract first value of delimited variable by : */
   chr    = scan(variant, 1, ':');
 /* input converts the variable from characters to numeric. */
@@ -58,22 +58,7 @@ data sasdata.japanese(keep = chr bp beta p_value trait);
          chr$	bp
          REF$	ALT$	Frq	Rsq
          beta	SE	p_value
-	 ;
-	 
+	       ;
+
   trait  = 'japanese';
-run;
-
-
-
-/* Push tables to SQL Server */
-proc datasets library = db;
-	append base = db.giant data=sasdata.giant;
-run;
-
-proc datasets library = db;
-	append base = db.ukbb_bmi data=sasdata.ukbb_bmi;
-run;
-
-proc datasets library = db;
-	append base = db.japanese data=sasdata.japanese;
 run;
