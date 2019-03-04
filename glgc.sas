@@ -30,16 +30,19 @@ data &dataset (keep = rsid beta p_value trait chr bp);
 run;
 %mend cleanup_raw;
 
+
 %cleanup_raw("E:\HUMAN_GWAS_GLGC_DATA\jointGwasMc_HDL.txt", HDL, 'HDL')
 %cleanup_raw("E:\HUMAN_GWAS_GLGC_DATA\jointGwasMc_LDL.txt", LDL, 'LDL')
 %cleanup_raw("E:\HUMAN_GWAS_GLGC_DATA\jointGwasMc_TC.txt", TC, 'TC')
 %cleanup_raw("E:\HUMAN_GWAS_GLGC_DATA\jointGwasMc_TG.txt", TG, 'TG')
+
 
 /* merge four tables into a single table; remove unnecessary lenght for chr */
 data sasdata.GLGC;
 	length chr $2;
 	set HDL LDL TC TG;
 run;
+
 
 /* drop existing table in sql server if necessary */
 proc sql;
@@ -49,6 +52,7 @@ proc sql;
 					 Database=Human_GWAS;");
 	execute(drop table glgc) by db;
 quit;
+
 
 /* push table to sql server */
 proc datasets library = db;
