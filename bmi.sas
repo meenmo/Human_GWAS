@@ -36,7 +36,7 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 	       n_complete_samples
 	       AC ytx beta se tstat p_value;
 
-/*Extract first value of delimited variable by : */
+	/*Extract first value of delimited variable by : */
 	chr    = scan(variant, 1, ':');
 	/* input converts the variable from characters to numeric. */
 	bp     = input(scan(variant, 2, ':'),32.);
