@@ -1,0 +1,174 @@
+1                                                          The SAS System                               14:47 Tuesday, March 5, 2019
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2016 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M5) 
+      Licensed to UNIVERSITY OF WISCONSIN MADISON -SFA- T&R, Site 70086601.
+NOTE: This session is executing on the X64_SR12R2  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 14.3
+      SAS/ETS 14.3
+      SAS/OR 14.3
+      SAS/IML 14.3
+      SAS/QC 14.3
+
+NOTE: Additional host information:
+
+ X64_SR12R2 WIN 6.3.9600  Server
+
+NOTE: SAS initialization used:
+      real time           0.92 seconds
+      cpu time            0.26 seconds
+      
+1          libname sasdata "E:\SAS\SAS_Library";
+NOTE: Libref SASDATA was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: E:\SAS\SAS_Library
+2          libname db odbc noprompt=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+3          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+4          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+5          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX schema=dbo;
+NOTE: Libref DB was successfully assigned as follows: 
+      Engine:        ODBC 
+      Physical Name: 
+6          
+7          %macro push(t1, t2, t3, t4, t5, t6, t7, t8, t9);
+8          /* drop existing table in sql server if necessary */
+9          proc sql;
+10         	connect to odbc as db (required="driver=sql server native client 11.0;
+11         									 seerver=PARKSLAB;
+12         									 Trusted_Connection=Yes;
+13         									 Database=Human_GWAS;");
+14         
+15           	execute(drop table &t1) by db;
+16             execute(drop table &t2) by db;
+17             execute(drop table &t3) by db;
+18             execute(drop table &t4) by db;
+19             execute(drop table &t5) by db;
+20             execute(drop table &t6) by db;
+21             execute(drop table &t7) by db;
+22             execute(drop table &t8) by db;
+23             execute(drop table &t9) by db;
+24           quit;
+25         
+2                                                     The SAS System                           14:47 Tuesday, March 5, 2019
+
+26         
+27         /* push table to sql server */
+28         proc datasets library = db;
+29         	append base = db.&t1 data=sasdata.&t1;
+30         	append base = db.&t2 data=sasdata.&t2;
+31         	append base = db.&t3 data=sasdata.&t3;
+32         	append base = db.&t4 data=sasdata.&t4;
+33         	append base = db.&t5 data=sasdata.&t5;
+34         	append base = db.&t6 data=sasdata.&t6;
+35         	append base = db.&t7 data=sasdata.&t7;
+36         	append base = db.&t8 data=sasdata.&t8;
+37         	append base = db.&t9 data=sasdata.&t9;
+38         run;
+39         %mend push;
+40         
+41         
+42         %push(Lipid_UKBB_lipid_trait,
+43               Lipid_ukbb_statin_usage,
+44               East_Asian,
+45               mvp_lipid,
+46               European,
+47               giant,
+48               ukbb_bmi,
+49               japanese,
+50               glgc)
+ERROR: CLI error trying to establish connection: [Microsoft][SQL Server Native Client 11.0]Neither DSN nor SERVER keyword 
+       supplied : [Microsoft][SQL Server Native Client 11.0]Invalid connection string attribute
+NOTE: PROC SQL set option NOEXEC and will continue to check the syntax of statements.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: Statement not executed due to NOEXEC option.
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           0.08 seconds
+      cpu time            0.07 seconds
+      
+
+
+                                                         Directory
+
+                                                    Libref         DB  
+                                                    Engine         ODBC
+                                                    Physical Name      
+                                                    Schema/Owner   dbo 
+
+
+                                                                                 DBMS
+                                                                         Member  Member
+                                    #  Name                              Type    Type
+
+                                    1  BMI_giant_bmi                     DATA    TABLE 
+                                    2  BMI_japanese_bmi                  DATA    TABLE 
+                                    3  BMI_ukbb_bmi                      DATA    TABLE 
+                                    4  Lipid_Andaleon_PeerJ              DATA    TABLE 
+                                    5  Lipid_GLGC_Exome_Liu_NG           DATA    TABLE 
+3                                                     The SAS System                           14:47 Tuesday, March 5, 2019
+
+                                                                                 DBMS
+                                                                         Member  Member
+                                    #  Name                              Type    Type
+
+                                    6  Lipid_GLGC_Willer_NG              DATA    TABLE 
+                                    7  Lipid_MVP_lipid_Klarin_NG         DATA    TABLE 
+                                    8  Lipid_Spracklen_Hum_Mol_Genetics  DATA    TABLE 
+                                    9  Lipid_UKBB_lipid_trait_Neale      DATA    TABLE 
+                                   10  Lipid_UKBB_statin_usage_Neale     DATA    TABLE 
+                                   11  Prins_HDL                         DATA    TABLE 
+                                   12  Prins_LDL                         DATA    TABLE 
+                                   13  Prins_TC                          DATA    TABLE 
+                                   14  Surakka_HDL                       DATA    TABLE 
+                                   15  Surakka_LDL                       DATA    TABLE 
+                                   16  Surakka_TC                        DATA    TABLE 
+                                   17  Surakka_TG                        DATA    TABLE 
+                                   18  cad_c4d                           DATA    TABLE 
+                                   19  cad_ukbb_conner                   DATA    TABLE 
+                                   20  cad_ukbb_soft_Nelson_NG           DATA    TABLE 
+                                   21  hg19                              DATA    TABLE 
+                                   22  hg19_snp                          DATA    TABLE 
+                                   23  hg38                              DATA    TABLE 
+                                   24  hg38_snp                          DATA    TABLE 
+NOTE: Data file SASDATA.LIPID_UKBB_LIPID_TRAIT.DATA is in a format that is native to another host, or the file encoding 
+      does not match the session encoding. Cross Environment Data Access will be used, which might require additional CPU 
+      resources and might reduce performance.
+NOTE: Appending SASDATA.LIPID_UKBB_LIPID_TRAIT to DB.Lipid_UKBB_lipid_trait.
+NOTE: BASE data set does not exist. DATA file is being copied to BASE file.
+ERROR: User asked for termination
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: SAS set option OBS=0 and will continue to check statements. This might cause NOTE: No observations in data set.
+NOTE: There were 24445 observations read from the data set SASDATA.LIPID_UKBB_LIPID_TRAIT.
+WARNING: The data set DB.Lipid_UKBB_lipid_trait may be incomplete.  When this step was stopped there were 24445 
+         observations and 5 variables.
+ERROR: ROLLBACK issued due to errors for data set DB.Lipid_UKBB_lipid_trait.DATA.
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           5.70 seconds
+      cpu time            1.06 seconds
+      
+ERROR: Errors printed on pages 2,3.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           7.08 seconds
+      cpu time            1.63 seconds
+      
