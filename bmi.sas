@@ -1,9 +1,4 @@
 libname sasdata "E:\SAS\SAS_Library";
-libname db odbc noprompt="driver=SQL Server Native Client 11.0;
-                          server=PARKSLAB;
-                          database=HUMAN_GWAS;
-                          Trusted_Connection=yes" schema=dbo;
-
 
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
   length snp$20;
