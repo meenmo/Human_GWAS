@@ -8,7 +8,7 @@ libname sasdata "E:\SAS\SAS_Library";
 	infile &path delimiter='09'x TRUNCOVER DSD firstobs=2;
 
 	* read data in input order;
-	input  variant $
+	input    variant $
 		 minor_allele $
 		 minor_AF
 		 expected_case_minor_AC

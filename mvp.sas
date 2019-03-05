@@ -7,28 +7,28 @@ data &dataset(keep = chr bp beta p_value trait);
 
 	/*read data in input order*/
 	input  ID
-	      Analysis_ID
-		 rsid$
-		 p_value
-		 Rank
-	     Plot
-	     chr
-	     bp
-	     Submitted_SNP_ID$
-	     ss2rs
-	     rs2genome
-	     Allele1$
-	     Allele2$
-	     Minor_allele$
-	     pHWE$
-	     Call_Rate$
-	     beta
-	     SE
-	     R_Squared
-	     Coded_Allele$
-	     Sample_size
-	     Bin_ID
-	 	 ;
+	       Analysis_ID
+	       rsid$
+	       p_value
+	       Rank
+	       Plot
+	       chr
+	       bp
+	       Submitted_SNP_ID$
+	       ss2rs
+	       rs2genome
+	       Allele1$
+	       Allele2$
+	       Minor_allele$
+	       pHWE$
+	       Call_Rate$
+	       beta
+	       SE
+	       R_Squared
+	       Coded_Allele$
+	       Sample_size
+	       Bin_ID
+	       ;
 
 	trait  = &trait;
 run;
