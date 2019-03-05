@@ -3,11 +3,11 @@ libname sasdata "E:\SAS\SAS_Library";
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
 	length snp$20;
 
-/* delimter is a single space for this raw data, not a tab*/
+	/* delimter is a single space for this raw data, not a tab*/
 	infile "E:\John Li data\gwas-download-master\BMI\bmi_giant_ukbb_meta_analysis.txt"
 	dlm=' ' TRUNCOVER DSD firstobs=2;
 
-/* read data in input order. Note that $ refers to character variables; without $ refers to numeric. */
+	/* read data in input order. Note that $ refers to character variables; without $ refers to numeric. */
 	input  chr$
 	       bp
 	       SNP$
@@ -48,7 +48,7 @@ data sasdata.japanese(keep = chr bp beta p_value trait);
 	infile "E:\John Li data\gwas-download-master\BMI\japanese_2017_BMI_BBJ_autosome.txt"
 		delimiter='09'x TRUNCOVER DSD firstobs=2;
 
-  * read data in input order;
+	/* read data in input order */	
 	input  SNP$
 	       chr$	bp
 	       REF$	ALT$	Frq	Rsq
