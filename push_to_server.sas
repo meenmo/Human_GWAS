@@ -4,25 +4,27 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
                           database=HUMAN_GWAS;
                           Trusted_Connection=yes" schema=dbo;
 
+
 %macro push(t1, t2, t3, t4, t5, t6, t7, t8, t9);
-/* drop existing table in sql server if necessary */
+
+/* drop existing tables in the server */
 proc sql;
 	connect to odbc as db (required="driver=sql server native client 11.0;
-									 seerver=PARKSLAB;
-									 Trusted_Connection=Yes;
-									 Database=Human_GWAS;");
-
+					 seerver=PARKSLAB;
+					 Trusted_Connection=Yes;
+					 Database=Human_GWAS;");
+	
   	execute(drop table &t1) by db;
-    execute(drop table &t2) by db;
-    execute(drop table &t3) by db;
-    execute(drop table &t4) by db;
-    execute(drop table &t5) by db;
-    execute(drop table &t6) by db;
-    execute(drop table &t7) by db;
-    execute(drop table &t8) by db;
-    execute(drop table &t9) by db;
-  quit;
-
+	execute(drop table &t2) by db;
+	execute(drop table &t3) by db;
+	execute(drop table &t4) by db;
+	execute(drop table &t5) by db;
+	execute(drop table &t6) by db;
+	execute(drop table &t7) by db;
+	execute(drop table &t8) by db;
+	execute(drop table &t9) by db;
+	
+quit;
 
 /* push table to sql server */
 proc datasets library = db;
@@ -36,6 +38,7 @@ proc datasets library = db;
 	append base = db.&t8 data=sasdata.&t8;
 	append base = db.&t9 data=sasdata.&t9;
 run;
+
 %mend push;
 
 
