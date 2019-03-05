@@ -6,7 +6,7 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
 
 
 %macro push(t1, t2, t3, t4, t5, t6, t7, t8, t9);
-<<<<<<< HEAD
+
 /* drop existing table in sql server if necessary */
 /*proc sql;*/
 /*	connect to odbc as db (required="driver=sql server native client 11.0;*/
@@ -25,27 +25,8 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
 /*    execute(drop table &t9) by db;*/
 /*  quit;*/
 
-=======
 
-/* drop existing tables in the server */
-proc sql;
-	connect to odbc as db (required="driver=sql server native client 11.0;
-					 seerver=PARKSLAB;
-					 Trusted_Connection=Yes;
-					 Database=Human_GWAS;");
-	
-  	execute(drop table &t1) by db;
-	execute(drop table &t2) by db;
-	execute(drop table &t3) by db;
-	execute(drop table &t4) by db;
-	execute(drop table &t5) by db;
-	execute(drop table &t6) by db;
-	execute(drop table &t7) by db;
-	execute(drop table &t8) by db;
-	execute(drop table &t9) by db;
-	
-quit;
->>>>>>> 59144f5b422f08725464d57f70ec9007ccab754b
+
 
 /* push table to sql server */
 proc datasets library = db;
