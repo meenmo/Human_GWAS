@@ -6,15 +6,14 @@ data &dataset (keep = rsid beta p_value trait chr bp);
    length SNP_hg19 rsid$20;
 
    /*'09'x refers to tab delimiter*/
-   infile &path
-	       delimiter='09'x TRUNCOVER DSD firstobs=2;
+   infile &path delimiter='09'x TRUNCOVER DSD firstobs=2;
 
   /*read data in input order*/
   input    SNP_hg19$
-		   rsid$
-		   A1$ A2$
-		   beta se N p_value Freq_A1_1000G_EAS
-		   ;
+           rsid$
+           A1$ A2$
+           beta se N p_value Freq_A1_1000G_EAS
+           ;
 
   trait = &trait;
 
