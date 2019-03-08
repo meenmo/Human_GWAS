@@ -1,4 +1,9 @@
 libname sasdata "E:\SAS\SAS_Library";
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
+
 
 %macro EU(path, dataset, trait);
 data &dataset (keep = rsid beta p_value trait chr bp);
@@ -32,4 +37,9 @@ run;
 data sasdata.European;
 	length chr$2;
 	set EU_HDL EU_LDL EU_TC EU_TG;
+run;
+
+
+proc datasets library = db;
+	append base = db.European data = sasdata.European;
 run;
