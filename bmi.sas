@@ -1,7 +1,11 @@
 libname sasdata "E:\SAS\SAS_Library";
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
 
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
-	length snp$20;
+	length chr$2 snp$20;
 
 	/* delimter is a single space for this raw data, not a tab*/
 	infile "E:\John Li data\gwas-download-master\BMI\bmi_giant_ukbb_meta_analysis.txt"
@@ -21,8 +25,9 @@ data sasdata.giant(keep = chr bp rsid beta p_value trait);
 	trait  = 'giant';
 run;
 
-
-
+proc datasets library = db;
+	append base = db.n_giant data=sasdata.giant;
+run;
 
 data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 	infile "E:\John Li data\gwas-download-master\BMI\BMI_UKBB.tsv"
@@ -58,3 +63,5 @@ data sasdata.japanese(keep = chr bp beta p_value trait);
 	trait  = 'japanese';
 	
 run;
+
+
