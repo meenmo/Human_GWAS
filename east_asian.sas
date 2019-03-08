@@ -1,5 +1,10 @@
 libname sasdata "E:\SAS\SAS_Library";
-
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
+			  
+			  
 %macro EA(path, dataset, trait);
 data &dataset (keep = rsid beta p_value trait chr bp);
    /*set the enough lenth for longer variables*/
@@ -35,4 +40,9 @@ run;
 data sasdata.East_Asian;
 	length chr $2;
 	set EA_HDL EA_LDL EA_TC EA_TG;
+run;
+
+
+proc datasets library = db;
+	append base = db.East_Asian data = sasdata.East_Asian;
 run;
