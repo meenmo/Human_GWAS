@@ -1,3 +1,10 @@
+libname sasdata "E:\SAS\SAS_Library";
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
+
+
 %macro glgc(path, dataset, trait);
 data &dataset (keep = rsid beta p_value trait chr bp);
 
@@ -35,4 +42,9 @@ run;
 data sasdata.glgc;
 	length chr $2;
 	set HDL LDL TC TG;
+run;
+
+
+proc datasets library = db;
+	append base = db.glgc data = sasdata.glgc;
 run;
