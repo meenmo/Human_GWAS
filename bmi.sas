@@ -4,6 +4,7 @@ libname db odbc noprompt="driver=SQL Server Native Client 11.0;
                           database=HUMAN_GWAS;
                           Trusted_Connection=yes" schema=dbo;
 
+
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
 	length chr$2 snp$20;
 
@@ -60,7 +61,6 @@ data sasdata.japanese(keep = chr bp beta p_value trait);
 	trait  = 'japanese';
 	
 run;
-
 
 
 proc datasets library = db;
