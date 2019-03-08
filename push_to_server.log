@@ -1,0 +1,114 @@
+1                                                          The SAS System                                12:39 Friday, March 8, 2019
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2016 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M5) 
+      Licensed to UNIVERSITY OF WISCONSIN MADISON -SFA- T&R, Site 70086601.
+NOTE: This session is executing on the X64_SR12R2  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 14.3
+      SAS/ETS 14.3
+      SAS/OR 14.3
+      SAS/IML 14.3
+      SAS/QC 14.3
+
+NOTE: Additional host information:
+
+ X64_SR12R2 WIN 6.3.9600  Server
+
+NOTE: SAS initialization used:
+      real time           0.65 seconds
+      cpu time            0.20 seconds
+      
+1          libname sasdata "E:\SAS\SAS_Library";
+NOTE: Libref SASDATA was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: E:\SAS\SAS_Library
+2          libname db odbc noprompt=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+3          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+4          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+5          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX readbuff = 32767 schema=dbo;
+NOTE: Libref DB was successfully assigned as follows: 
+      Engine:        ODBC 
+      Physical Name: 
+6          
+7          
+8          proc datasets library = db;
+                                                         Directory
+
+                                                    Libref         DB  
+                                                    Engine         ODBC
+                                                    Physical Name      
+                                                    Schema/Owner   dbo 
+
+
+                                                                                 DBMS
+                                                                         Member  Member
+                                    #  Name                              Type    Type
+
+                                    1  BMI_UKBB_Neale                    DATA    TABLE 
+                                    2  BMI_giant_bmi                     DATA    TABLE 
+                                    3  BMI_japanese_bmi                  DATA    TABLE 
+                                    4  Cad_c4d                           DATA    TABLE 
+                                    5  Cad_ukbb_Connor_alkesgroup        DATA    TABLE 
+2                                                     The SAS System                            12:39 Friday, March 8, 2019
+
+                                                                                 DBMS
+                                                                         Member  Member
+                                    #  Name                              Type    Type
+
+                                    6  Cad_ukbb_soft_Nelson_NG           DATA    TABLE 
+                                    7  Lipid_Engage_Surakka_NG           DATA    TABLE 
+                                    8  Lipid_Exome_Lu_East_Asian_NG      DATA    TABLE 
+                                    9  Lipid_GLGC_Exome_Liu_NG           DATA    TABLE 
+                                   10  Lipid_GLGC_Willer_NG              DATA    TABLE 
+                                   11  Lipid_MVP_Klarin_NG               DATA    TABLE 
+                                   12  Lipid_Prins_Scitific_Report       DATA    TABLE 
+                                   13  Lipid_Spracklen_Hum_Mol_Genetics  DATA    TABLE 
+                                   14  Lipid_UKBB_lipid_trait_Neale      DATA    TABLE 
+                                   15  Lipid_UKBB_statin_usage_Neale     DATA    TABLE 
+                                   16  hg19                              DATA    TABLE 
+                                   17  hg19_snp                          DATA    TABLE 
+                                   18  hg38                              DATA    TABLE 
+                                   19  hg38_snp                          DATA    TABLE 
+                                   20  n_ukbb_bmi                        DATA    TABLE 
+                                   21  prins                             DATA    TABLE 
+9          	
+9        !  append base = db.n_ukbb_bmi data=sasdata.ukbb_bmi;
+NOTE: Data file SASDATA.UKBB_BMI.DATA is in a format that is native to another host, or the file encoding does not match 
+      the session encoding. Cross Environment Data Access will be used, which might require additional CPU resources and 
+      might reduce performance.
+10         	
+NOTE: Appending SASDATA.UKBB_BMI to DB.n_ukbb_bmi.
+ERROR: User asked for termination
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: SAS set option OBS=0 and will continue to check statements. This might cause NOTE: No observations in data set.
+NOTE: There were 13021 observations read from the data set DB.n_ukbb_bmi.
+ERROR: ROLLBACK issued due to errors for data set DB.n_ukbb_bmi.DATA.
+NOTE: There were 13021 observations read from the data set SASDATA.UKBB_BMI.
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           4.20 seconds
+      cpu time            0.67 seconds
+      
+10       !  append base = db.n_Lipid_UKBB_lipid_trait data=sasdata.Lipid_UKBB_lipid_trait;
+11         	append base = db.n_Lipid_UKBB_lipid_trait data=sasdata.Lipid_UKBB_lipid_trait;
+12         run;
+
+
+ERROR: Errors printed on page 2.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           4.94 seconds
+      cpu time            0.92 seconds
+      
