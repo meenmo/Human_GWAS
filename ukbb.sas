@@ -1,5 +1,10 @@
 libname sasdata "E:\SAS\SAS_Library";
-
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" readbuff = 32767 schema=dbo;
+			  
+			  
 %macro ukbb(dataset, trait, path);
 	data &dataset(keep = chr bp beta p_valUE trait);
 
@@ -50,4 +55,10 @@ run;
 data sasdata.Lipid_ukbb_statin_usage;
 	length chr$2;
 	set atorvastatin rosuvastatin pravastatin fluvastatin sivastatin;
+run;
+
+
+proc datasets library = db;
+	append base = db.Lipid_UKBB_lipid_trait  data=sasdata.Lipid_UKBB_lipid_trait;
+	append base = db.Lipid_ukbb_statin_usage data=sasdata.Lipid_ukbb_statin_usage;
 run;
