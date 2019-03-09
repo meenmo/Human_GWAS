@@ -10,4 +10,4 @@ WHERE gene_name = @gene and
 	  BMI_giant_bmi.bp between hg19.chr_start-@margin and hg19.chr_end+@margin
 GO
 
-EXEC cross_ref 'sesn1', 20000;
+-- EXEC cross_ref 'sesn1', 20000;
