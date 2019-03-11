@@ -35,7 +35,7 @@ CREATE PROCEDURE cross_ref @gene varchar(20), @margin numeric
 	WHERE  gene_name = @gene and
 		   [dbo].[BMI_giant_bmi].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
 		   [dbo].[BMI_japanese_bmi].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
-	       [dbo].[BMI_ukbb_bmi_Neale].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
+		   [dbo].[BMI_ukbb_bmi_Neale].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
 		   [dbo].[Lipid_Exome_Lu_East_Asian_NG].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
 		   [dbo].[Lipid_Exome_Lu_European_and_East_Asian_NG].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and
 		   [dbo].[Lipid_GLGC_Exome_Liu_NG].bp between hg19.chr_start-@margin and hg19.chr_end+@margin and	
