@@ -1,8 +1,4 @@
-libname sasdata "E:\SAS\SAS_Library";
-libname db odbc noprompt="driver=SQL Server Native Client 11.0;
-                          server=PARKSLAB;
-                          database=HUMAN_GWAS;
-                          Trusted_Connection=yes" schema=dbo;
+
 
 
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
@@ -27,6 +23,38 @@ data sasdata.giant(keep = chr bp rsid beta p_value trait);
 run;
 
 
+data sasdata.japanese(keep = chr bp beta p_value trait);
+	infile "E:\John Li data\gwas-download-master\BMI\japanese_2017_BMI_BBJ_autosome.txt"
+		delimiter='09'x TRUNCOVER DSD firstobs=2;
+
+	/* read data in input order */	
+	input  SNP$
+	       chr$	bp
+	       REF$	ALT$	Frq	Rsq
+	       beta	SE	p_value
+	       ;
+
+	trait  = 'japanese';
+	
+run;
+
+
+/* This is the statement for permanent library called 'sasdata'. 
+   If a dataset is saved under permanet library, it will saved here.
+   Otherwise, if a dataset is run without specifying any library, it will be automatically saved under work library.
+   All data under work library will be delted when SAS is terminated*/
+libname sasdata "E:\SAS\SAS_Library";
+
+/* This statement is to connect SAS to the Server */
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
+
+
+/* Dataset that will be generated thorugh this data step will be named as 'ukbb_bmi'
+and this will be saved under 'sasdata' library
+All columns will be dropped except for 'chr' 'bp' 'beta' 'p_value' 'trait' */
 data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 	/*Load raw data
 	 delimiter='09'x is for tab-delimited file
@@ -69,21 +97,9 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 run;
 
 
-data sasdata.japanese(keep = chr bp beta p_value trait);
-	infile "E:\John Li data\gwas-download-master\BMI\japanese_2017_BMI_BBJ_autosome.txt"
-		delimiter='09'x TRUNCOVER DSD firstobs=2;
-
-	/* read data in input order */	
-	input  SNP$
-	       chr$	bp
-	       REF$	ALT$	Frq	Rsq
-	       beta	SE	p_value
-	       ;
-
-	trait  = 'japanese';
-	
-run;
-
+/* This procedure is to push sasdata to sql server. 
+   Before pushing to the server, there shouldn't be table whose name is identical as specified below (db.~~) in the server.
+   It may take some time. */
 
 proc datasets library = db;
 	append base = db.giant	  data = sasdata.giant;
