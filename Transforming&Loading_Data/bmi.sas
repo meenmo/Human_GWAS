@@ -34,8 +34,7 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 	 DSD considers an observation a missing value if there are two delimiters in a row
 	 The first line will be read from the second line of the raw data since the first line will be column names */
 	
-	infile "E:\John Li data\gwas-download-master\BMI\BMI_UKBB.tsv"
-	delimiter='09'x TRUNCOVER DSD firstobs=2;
+	infile "E:\John Li data\gwas-download-master\BMI\BMI_UKBB.tsv" delimiter='09'x TRUNCOVER DSD firstobs=2;
 
 	/*Read data in input order
 	  Followings will be each name of a column for raw data
