@@ -22,8 +22,11 @@ ukbb_statin     = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale", sql
 
 
 table_list = [giant,japanse,ukbb_bmi,surakka,east_asian,european,exome,glgc,lipid_japanese,lipid_mvp,lipid_spracklen,high_chol,ukbb_lipid,ukbb_statin]
+table_name = ["giant","japanse","ukbb_bmi","surakka","east_asian","european","exome","glgc","lipid_japanese","lipid_mvp","lipid_spracklen","high_chol","ukbb_lipid","ukbb_statin"]
 
+c=0
 for table in table_list:
-    table['table_name'] = table
+    table['table_name'] = table_name[c]
+    c+=1
 
 print(giant.head())
