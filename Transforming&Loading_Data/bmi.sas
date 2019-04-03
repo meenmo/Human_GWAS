@@ -1,4 +1,14 @@
+/* This is the statement for permanent library called 'sasdata'. 
+   If a dataset is saved under permanet library, it will saved here.
+   Otherwise, if a dataset is run without specifying any library, it will be automatically saved under work library.
+   All data under work library will be delted when SAS is terminated*/
+libname sasdata "E:\SAS\SAS_Library";
 
+/* This statement is to connect SAS to the SQL Server */
+libname db odbc noprompt="driver=SQL Server Native Client 11.0;
+                          server=PARKSLAB;
+                          database=HUMAN_GWAS;
+                          Trusted_Connection=yes" schema=dbo;
 
 
 data sasdata.giant(keep = chr bp rsid beta p_value trait);
@@ -38,18 +48,6 @@ data sasdata.japanese(keep = chr bp beta p_value trait);
 	
 run;
 
-
-/* This is the statement for permanent library called 'sasdata'. 
-   If a dataset is saved under permanet library, it will saved here.
-   Otherwise, if a dataset is run without specifying any library, it will be automatically saved under work library.
-   All data under work library will be delted when SAS is terminated*/
-libname sasdata "E:\SAS\SAS_Library";
-
-/* This statement is to connect SAS to the Server */
-libname db odbc noprompt="driver=SQL Server Native Client 11.0;
-                          server=PARKSLAB;
-                          database=HUMAN_GWAS;
-                          Trusted_Connection=yes" schema=dbo;
 
 
 /* Dataset that will be generated thorugh this data step will be named as 'ukbb_bmi'
@@ -97,10 +95,10 @@ data sasdata.ukbb_bmi(keep = chr bp beta p_value trait);
 run;
 
 
+
 /* This procedure is to push sasdata to sql server. 
    Before pushing to the server, there shouldn't be table whose name is identical as specified below (db.~~) in the server.
    It may take some time. */
-
 proc datasets library = db;
 	append base = db.giant	  data = sasdata.giant;
 	append base = db.ukbb_bmi data = sasdata.ukbb_bmi;

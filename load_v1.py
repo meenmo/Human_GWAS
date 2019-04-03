@@ -30,7 +30,7 @@ while True:
 
 
                 break
-            
+
 
         except ValueError:
             print('Please enter valid input!')
@@ -148,7 +148,7 @@ while True:
     df = pd.DataFrame(columns=df_col)
 
     count=0
-    for table in table_list: 
+    for table in table_list:
         try:
             #Add a column named 'table_name' whose values are corresponding table name
             table['table_name'] = table_name[count]
