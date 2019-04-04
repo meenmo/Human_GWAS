@@ -136,7 +136,7 @@ while True:
     hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
     #Makes all gene names into lower cases since SQL is not case-sensitive, but Python is.
     hg19['gene_name'] = hg19['gene_name'].str.lower()
-    hg19['table_name'] = 'aw011738'
+    hg19['table_name'] = 'hg19'
 
     gene_name = input("Type gene name: ").lower()
     start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
@@ -167,7 +167,7 @@ while True:
             df = df.append(df_temp)
             count+=1
 
-            except TypeError:
+        except TypeError:
             continue
 
     #Convert 'bp' into integer

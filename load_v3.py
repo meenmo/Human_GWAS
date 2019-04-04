@@ -36,6 +36,7 @@ def error_messeage():
     print('***********************************')
     print('')
 
+
 def get_table():
     while True:
         #prompt to get input which table to include
@@ -74,13 +75,8 @@ def get_table():
 
     return(chosen_list)
 
-def load_hg19():
-    hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
-    hg19['gene_name'] = hg19['gene_name'].str.lower()
-    hg19['table_name'] = 'hg19'
 
-def get_input():
-    gene_name = input("Type gene name: ").lower()
+def get_chr():
     chr       = input("Enter chromosomes you want to include")
 
     #Obtain index of chosen tables as a list
@@ -121,3 +117,47 @@ def get_input():
 
     start     = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
     end       = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
+
+gene_name = input("Type gene name: ").lower()
+
+
+hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
+hg19['gene_name'] = hg19['gene_name'].str.lower()
+hg19['table_name'] = 'hg19'
+start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
+end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
+
+#construct empty dataframe
+df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
+df = pd.DataFrame(columns=df_col)
+table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
+
+def create_df(df, chosen_table, dict):
+    for chosen_table in dict:
+        try:
+            table      = table_dic[chosen_table][0]
+            table_name = table_dic[chosen_table][1]
+
+            #Add a column named 'table_name' whose values are corresponding table name
+            table[table_name] = table_name
+
+
+            #each column that satisfies the conditions.
+            a = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['bp'].to_frame()
+            b = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['chr'].to_frame()
+            c = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['beta'].to_frame()
+            d = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['p_value'].to_frame()
+            e = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['trait'].to_frame()
+            f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['table_name'].to_frame()
+
+            #merge these all together
+            df_temp = a.join(b).join(c).join(d).join(e).join(f)
+            #append to the existing df
+            df = df.append(df_temp)
+            #cast 'bp' column to int
+            df['bp'] = df['bp'].astype(int)
+
+        except TypeError:
+            continue
+
+    return(df)
