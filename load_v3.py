@@ -4,30 +4,31 @@ import pyodbc
 #Connect to SQL Server
 sql_conn =  pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=PARKSLAB;DATABASE=Human_GWAS;Trusted_Connection=Yes')
 
-#Load Tables from SQL Server into Pandas DataFrame
-###############################################################################################################
-# hg19            = pd.read_sql("SELECT * FROM hg19", sql_conn)
-# giant           = pd.read_sql("SELECT TOP 500 * FROM BMI_giant_bmi", sql_conn)
-# japanese        = pd.read_sql("SELECT TOP 500 * FROM BMI_japanese_bmi", sql_conn)
-# ukbb_bmi        = pd.read_sql("SELECT TOP 500 * FROM BMI_ukbb_bmi_Neale", sql_conn)
-# surakka         = pd.read_sql("SELECT TOP 500 * FROM Lipid_Engage_Surakka_NG", sql_conn)
-# east_asian      = pd.read_sql("SELECT TOP 500 * FROM Lipid_Exome_Lu_East_Asian_NG", sql_conn)
-# european        = pd.read_sql("SELECT TOP 500 * FROM Lipid_Exome_Lu_European_and_East_Asian_NG", sql_conn)
-# glgc            = pd.read_sql("SELECT TOP 500 * FROM Lipid_GLGC_Willer_NG", sql_conn)
-# lipid_japanese  = pd.read_sql("SELECT TOP 500 * FROM Lipid_Japanese_lipid_trait_Kanai_NG", sql_conn)
-# lipid_mvp       = pd.read_sql("SELECT TOP 500 * FROM Lipid_MVP_Klarin_NG", sql_conn)
-# lipid_spracklen = pd.read_sql("SELECT TOP 500 * FROM Lipid_Spracklen_Hum_Mol_Genetics", sql_conn)
-# high_chol       = pd.read_sql("SELECT TOP 500 * FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup", sql_conn)
-# ukbb_lipid      = pd.read_sql("SELECT TOP 500 * FROM Lipid_UKBB_lipid_trait_Neale", sql_conn)
-# ukbb_statin     = pd.read_sql("SELECT TOP 500 * FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
-###############################################################################################################
+def load_table(sql_conn):
+    hg19            = pd.read_sql("SELECT * FROM hg19", sql_conn)
+    giant           = pd.read_sql("SELECT * FROM BMI_giant_bmi", sql_conn)
+    japanese        = pd.read_sql("SELECT * FROM BMI_japanese_bmi", sql_conn)
+    ukbb_bmi        = pd.read_sql("SELECT * FROM BMI_ukbb_bmi_Neale", sql_conn)
+    surakka         = pd.read_sql("SELECT * FROM Lipid_Engage_Surakka_NG", sql_conn)
+    east_asian      = pd.read_sql("SELECT * FROM Lipid_Exome_Lu_East_Asian_NG", sql_conn)
+    european        = pd.read_sql("SELECT * FROM Lipid_Exome_Lu_European_and_East_Asian_NG", sql_conn)
+    glgc            = pd.read_sql("SELECT * FROM Lipid_GLGC_Willer_NG", sql_conn)
+    lipid_japanese  = pd.read_sql("SELECT * FROM Lipid_Japanese_lipid_trait_Kanai_NG", sql_conn)
+    lipid_mvp       = pd.read_sql("SELECT * FROM Lipid_MVP_Klarin_NG", sql_conn)
+    lipid_spracklen = pd.read_sql("SELECT * FROM Lipid_Spracklen_Hum_Mol_Genetics", sql_conn)
+    high_chol       = pd.read_sql("SELECT * FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup", sql_conn)
+    ukbb_lipid      = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale", sql_conn)
+    ukbb_statin     = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
 
-#Makes all gene names into lower cases since SQL is not case-sensitive, but Python is.
-# hg19['gene_name'] = hg19['gene_name'].str.lower()
-# hg19['table_name'] = 'hg19'
 
-# table_list = [giant,japanese,ukbb_bmi,surakka,east_asian,european,glgc,lipid_japanese,lipid_mvp,lipid_spracklen,high_chol,ukbb_lipid,ukbb_statin]
-# table_name = ["giant","japanese","ukbb_bmi","surakka","east_asian","european","glgc","lipid_japanese","lipid_mvp","lipid_spracklen","high_chol","ukbb_lipid","ukbb_statin"]
+def load_hg19():
+    hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
+    hg19['gene_name'] = hg19['gene_name'].str.lower()
+    hg19['table_name'] = 'hg19'
+
+    start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
+    end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
+
 
 def error_messeage():
     print('')
@@ -46,7 +47,7 @@ def get_table():
         try:
             #select all
             if choose_table == '*':
-                chosen_list = [i for i in range(1,14)]
+                chosen_table = [i for i in range(1,14)]
                 break
 
             #select multiple tables
@@ -54,16 +55,16 @@ def get_table():
                 # The sets module provides classes for constructing and
                 # manipulating unordered collections of unique elements.
                 # Then cast to list again.
-                chosen_list = list(set([int(i) for i in choose_table.split(",")]))
+                chosen_table = list(set([int(i) for i in choose_table.split(",")]))
 
-                if False not in [i in range(1,14) for i in chosen_list]:
+                if False not in [i in range(1,14) for i in chosen_table]:
                     break
                 else:
                     error_messeage()
 
             #select single table
             elif int(choose_table) in [i for i in range(1,14)]:
-                chosen_list = int(choose_table)
+                chosen_table = int(choose_table)
                 break
 
             else:
@@ -73,7 +74,7 @@ def get_table():
             error_messeage()
             continue
 
-    return(chosen_list)
+    return(chosen_table)
 
 
 def get_chr():
@@ -94,7 +95,7 @@ def get_chr():
             # Then cast to list again.
             chosen_chr = list(set([int(i) for i in choose_table.split(",")]))
 
-            if False not in [i in chr_list for i in chosen_list]:
+            if False not in [i in chr_list for i in chosen_table]:
                 break
             else:
                 error_messeage()
@@ -115,40 +116,37 @@ def get_chr():
     return(chosen_chr)
 
 
-    start     = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
-    end       = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
-
 gene_name = input("Type gene name: ").lower()
+margin    = int(input("Enter your margin: "))
 
 
-hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
-hg19['gene_name'] = hg19['gene_name'].str.lower()
-hg19['table_name'] = 'hg19'
-start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
-end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
+def create_df(sql_conn):
+    load_hg19()
+    chr = get_chr()
 
-#construct empty dataframe
-df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
-df = pd.DataFrame(columns=df_col)
-table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
+    #construct empty dataframe
+    df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
+    df = pd.DataFrame(columns=df_col)
 
-def create_df(df, chosen_table, dict):
-    for chosen_table in dict:
+    table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
+
+    chosen_table = get_table()
+    for i in chosen_table:
         try:
-            table      = table_dic[chosen_table][0]
-            table_name = table_dic[chosen_table][1]
+            table      = table_dic[i][0]
+            table_name = table_dic[i][1]
 
             #Add a column named 'table_name' whose values are corresponding table name
             table[table_name] = table_name
 
 
             #each column that satisfies the conditions.
-            a = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['bp'].to_frame()
-            b = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['chr'].to_frame()
-            c = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['beta'].to_frame()
-            d = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['p_value'].to_frame()
-            e = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['trait'].to_frame()
-            f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(get_chr()))]['table_name'].to_frame()
+            a = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['bp'].to_frame()
+            b = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['chr'].to_frame()
+            c = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['beta'].to_frame()
+            d = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['p_value'].to_frame()
+            e = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['trait'].to_frame()
+            f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chr)]['table_name'].to_frame()
 
             #merge these all together
             df_temp = a.join(b).join(c).join(d).join(e).join(f)
