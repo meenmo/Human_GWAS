@@ -21,7 +21,7 @@ def load_table(sql_conn):
     ukbb_statin     = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
 
 
-def load_hg19():
+def load_hg19(sql_conn):
     hg19 = pd.read_sql("SELECT * FROM hg19", sql_conn)
     hg19['gene_name'] = hg19['gene_name'].str.lower()
     hg19['table_name'] = 'hg19'
@@ -121,7 +121,7 @@ margin    = int(input("Enter your margin: "))
 
 
 def create_df(sql_conn):
-    load_hg19()
+    load_hg19(sql_conn)
     chr = get_chr()
 
     #construct empty dataframe
