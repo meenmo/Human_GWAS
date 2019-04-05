@@ -81,7 +81,6 @@ def get_chr():
                 break
 
             else:
-
                 error_messeage()
                 continue
 
