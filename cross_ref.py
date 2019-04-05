@@ -1,5 +1,6 @@
 import pandas as pd
 import pyodbc
+
 def error_messeage():
     print('')
     print('***********************************')
@@ -127,6 +128,7 @@ def main():
         print('')
         margin    = int(input("Enter your margin: "))
         print('')
+        
         # The starting and end location of chromosome of corresponding gene name under hg19
         start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
         end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
@@ -134,9 +136,10 @@ def main():
         # Construct empty dataframe
         df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
         df = pd.DataFrame(columns=df_col)
+        
         # Table dictionary
         table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
-
+        
         for i in chosen_table:
             try:
                 table      = table_dic[i][0]
