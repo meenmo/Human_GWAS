@@ -139,11 +139,11 @@ def main():
         # Input for which tables&chromosome to include and gene name and margin(+/-)
         chosen_table = get_table()
         print('')
-        chosen_chr = get_chr()
+        chosen_chr   = get_chr()
         print('')
-        gene_name = input("Type gene name: ").lower()
+        gene_name    = input("Type gene name: ").lower()
         print('')
-        margin    = int(input("Enter your margin: "))
+        margin       = int(input("Enter your margin: "))
         print('')
         
         # The starting and end location of chromosome of corresponding gene name under hg19
@@ -151,8 +151,7 @@ def main():
         end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
 
         # Construct empty dataframe
-        df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
-        df = pd.DataFrame(columns=df_col)
+        df = pd.DataFrame(columns=["bp", "chr", "beta", "p_value", "trait", "table_name"])
         
         # Table dictionary
         table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
@@ -174,11 +173,13 @@ def main():
                 f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['table_name'].to_frame()
 
                 #merge these all together
-                df_temp = a.join(b).join(c).join(d).join(e).join(f)
+                df_temp   = a.join(b).join(c).join(d).join(e).join(f)
+                
                 #append to the existing df
-                df = df.append(df_temp)
+                df        = df.append(df_temp)
+                
                 #cast 'bp' column to int
-                df['bp'] = df['bp'].astype(int)
+                df['bp']  = df['bp'].astype(int)
                 df['chr'] = df['chr'].astype(int)
 
             except TypeError:
