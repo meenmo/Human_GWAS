@@ -1,5 +1,6 @@
 import pandas as pd
 import pyodbc
+
 def error_messeage():
     print('')
     print('***********************************')
@@ -11,8 +12,25 @@ def error_messeage():
 def get_table():
     while True:
         #prompt to get input which table to include
-        choose_table = input("Which tables do you want to include?\n\n 1. BMI_giant_bmi\n 2. BMI_japanese_bmi \n 3. BMI_ukbb_bmi_Neale \n 4. Lipid_Engage_Surakka_NG \n 5. Lipid_Exome_Lu_East_Asian_NG \n 6. Lipid_Exome_Lu_European_and_East_Asian_NG \n 7. Lipid_GLGC_Willer_NG \n 8. Lipid_Japanese_lipid_trait_Kanai_NG \n 9. Lipid_MVP_Klarin_NG \n 10.Lipid_Spracklen_Hum_Mol_Genetics \n 11.Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup \n 12.Lipid_UKBB_lipid_trait_Neale \n 13.Lipid_UKBB_statin_usage_Neale\n\nEnter the table numbers that you want to include seperataed by comma.\ne.g.) 1,3,5\nIf you want to choose all tables, then enter *.\n")
-
+        # choose_table = input("Which tables do you want to include?\n\n 1. BMI_giant_bmi\n 2. BMI_japanese_bmi \n 3. BMI_ukbb_bmi_Neale \n 4. Lipid_Engage_Surakka_NG \n 5. Lipid_Exome_Lu_East_Asian_NG \n 6. Lipid_Exome_Lu_European_and_East_Asian_NG \n 7. Lipid_GLGC_Willer_NG \n 8. Lipid_Japanese_lipid_trait_Kanai_NG \n 9. Lipid_MVP_Klarin_NG \n 10.Lipid_Spracklen_Hum_Mol_Genetics \n 11.Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup \n 12.Lipid_UKBB_lipid_trait_Neale \n 13.Lipid_UKBB_statin_usage_Neale\n\nEnter the table numbers that you want to include seperataed by comma.\ne.g.) 1,3,5\nIf you want to choose all tables, then enter *.\n")
+        print("Which tables do you want to include?\n")
+        print("1. BMI_giant_bmi")
+        print("2. BMI_japanese_bmi")
+        print("3. BMI_ukbb_bmi_Neale")
+        print("4. Lipid_Engage_Surakka_NG")
+        print("5. Lipid_Exome_Lu_East_Asian_NG")
+        print("6. Lipid_Exome_Lu_European_and_East_Asian_NG")
+        print("7. Lipid_GLGC_Willer_NG")
+        print("8. Lipid_Japanese_lipid_trait_Kanai_NG")
+        print("9. Lipid_MVP_Klarin_NG")
+        print("10.Lipid_Spracklen_Hum_Mol_Genetics")
+        print("11.Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup")
+        print("12.Lipid_UKBB_lipid_trait_Neale")
+        print("13.Lipid_UKBB_statin_usage_Neale\n")
+        print("Enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5")
+        print("If you want to choose all tables, then enter *.")
+        choose_table = input()
+        
         #Obtain index of chosen tables as a list
         try:
             #select all
@@ -121,22 +139,23 @@ def main():
         # Input for which tables&chromosome to include and gene name and margin(+/-)
         chosen_table = get_table()
         print('')
-        chosen_chr = get_chr()
+        chosen_chr   = get_chr()
         print('')
-        gene_name = input("Type gene name: ").lower()
+        gene_name    = input("Type gene name: ").lower()
         print('')
-        margin    = int(input("Enter your margin: "))
+        margin       = int(input("Enter your margin: "))
         print('')
+        
         # The starting and end location of chromosome of corresponding gene name under hg19
         start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
         end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
 
         # Construct empty dataframe
-        df_col = ["bp", "chr", "beta", "p_value", "trait", "table_name"]
-        df = pd.DataFrame(columns=df_col)
+        df = pd.DataFrame(columns=["bp", "chr", "beta", "p_value", "trait", "table_name"])
+        
         # Table dictionary
         table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
-
+        
         for i in chosen_table:
             try:
                 table      = table_dic[i][0]
@@ -154,11 +173,13 @@ def main():
                 f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['table_name'].to_frame()
 
                 #merge these all together
-                df_temp = a.join(b).join(c).join(d).join(e).join(f)
+                df_temp   = a.join(b).join(c).join(d).join(e).join(f)
+                
                 #append to the existing df
-                df = df.append(df_temp)
+                df        = df.append(df_temp)
+                
                 #cast 'bp' column to int
-                df['bp'] = df['bp'].astype(int)
+                df['bp']  = df['bp'].astype(int)
                 df['chr'] = df['chr'].astype(int)
 
             except TypeError:
