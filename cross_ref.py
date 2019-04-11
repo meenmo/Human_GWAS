@@ -1,5 +1,6 @@
 import pandas as pd
 import pyodbc
+import pandas.io.sql as psql
 
 def error_messeage():
     print('')
@@ -30,7 +31,7 @@ def get_table():
         print("Enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5")
         print("If you want to choose all tables, then enter *.")
         choose_table = input()
-        
+
         #Obtain index of chosen tables as a list
         try:
             #select all
@@ -71,7 +72,7 @@ def get_chr():
     while True:
         choose_chr = input("Enter chromosomes you want to include. Separate by comma if you select multiple chromosomes:\n")
         # Valid input list for chromosome
-        chr_list   = list(range(1,24))+['x']
+        chr_list   = list(range(1,24))
 
         #Obtain index of chosen tables as a list
         try:
@@ -114,6 +115,8 @@ def main():
     sql_conn =  pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=PARKSLAB;DATABASE=Human_GWAS;Trusted_Connection=Yes')
 
     # Load tables from SQL Server
+    ukbb_lipid               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale", sql_conn)
+    ukbb_statin              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
     hg19            = pd.read_sql("SELECT * FROM hg19", sql_conn)
     giant           = pd.read_sql("SELECT * FROM BMI_giant_bmi", sql_conn)
     japanese        = pd.read_sql("SELECT * FROM BMI_japanese_bmi", sql_conn)
@@ -126,8 +129,6 @@ def main():
     lipid_mvp       = pd.read_sql("SELECT * FROM Lipid_MVP_Klarin_NG", sql_conn)
     lipid_spracklen = pd.read_sql("SELECT * FROM Lipid_Spracklen_Hum_Mol_Genetics", sql_conn)
     high_chol       = pd.read_sql("SELECT * FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup", sql_conn)
-    ukbb_lipid      = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale", sql_conn)
-    ukbb_statin     = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
 
     # Make all gene names to be lower case
     hg19['gene_name'] = hg19['gene_name'].str.lower()
@@ -145,17 +146,17 @@ def main():
         print('')
         margin       = int(input("Enter your margin: "))
         print('')
-        
+
         # The starting and end location of chromosome of corresponding gene name under hg19
-        start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start'])
-        end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end'])
+        start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start']) - margin
+        end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end']) + margin
 
         # Construct empty dataframe
         df = pd.DataFrame(columns=["bp", "chr", "beta", "p_value", "trait", "table_name"])
-        
+
         # Table dictionary
         table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}
-        
+
         for i in chosen_table:
             try:
                 table      = table_dic[i][0]
@@ -174,10 +175,10 @@ def main():
 
                 #merge these all together
                 df_temp   = a.join(b).join(c).join(d).join(e).join(f)
-                
+
                 #append to the existing df
                 df        = df.append(df_temp)
-                
+
                 #cast 'bp' column to int
                 df['bp']  = df['bp'].astype(int)
                 df['chr'] = df['chr'].astype(int)
