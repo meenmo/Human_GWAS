@@ -115,29 +115,26 @@ def main():
     sql_conn =  pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=PARKSLAB;DATABASE=Human_GWAS;Trusted_Connection=Yes')
 
     # Load tables from SQL Server
+
+    ########################################
+    #Break large table into chunks by trait#
+    ########################################
     ukbb_lipid_a               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'statin_usage' ", sql_conn)
     ukbb_lipid_b               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'self_reported_high_cholesterol_male' ", sql_conn)
     ukbb_lipid_c               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'self_reported_high_cholesterol_female'" , sql_conn)
     ukbb_lipid_d               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'self_reported_high_cholesterol_both' ", sql_conn)
+    ukbb_lipid = pd.concat([ukbb_lipid_a,ukbb_lipid_b,ukbb_lipid_c,ukbb_lipid_d])
 
-    temp_lipid = [ukbb_lipid_a,ukbb_lipid_b,ukbb_lipid_c,ukbb_lipid_d]
-    ukbb_lipid = pd.DataFrame(columns=["chr", "bp",  "beta", "p_value", "trait"])
-    for i in temp_lipid:
-        ukbb_lipid = ukbb_lipid.append(i)
 
-    ####################$
-    #Break large table into chunks by trait
     ukbb_statin_a              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale where trait = 'atorvastatin' ", sql_conn)
     ukbb_statin_b              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale where trait = 'rosuvastatin' ", sql_conn)
     ukbb_statin_c              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale where trait = 'pravastatin' ", sql_conn)
     ukbb_statin_d              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale where trait = 'fluvastatin' ", sql_conn)
     ukbb_statin_e              = pd.read_sql("SELECT * FROM Lipid_UKBB_statin_usage_Neale where trait = 'sivastatin' ", sql_conn)
+    ukbb_statin = pd.concat([ukbb_statin_a,ukbb_statin_b,ukbb_statin_c,ukbb_statin_d, ukbb_statin_e])
 
-    temp_statin = [ukbb_statin_a,ukbb_statin_b,ukbb_statin_c,ukbb_statin_d, ukbb_statin_e]
-    ukbb_statin = pd.DataFrame(columns=["chr", "bp",  "beta", "p_value", "trait"])
-    for i in temp_statin:
-        ukbb_statin = ukbb_statin.append(i)
-    
+
+
     hg19            = pd.read_sql("SELECT * FROM hg19", sql_conn)
     giant           = pd.read_sql("SELECT * FROM BMI_giant_bmi", sql_conn)
     japanese        = pd.read_sql("SELECT * FROM BMI_japanese_bmi", sql_conn)
