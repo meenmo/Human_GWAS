@@ -117,7 +117,7 @@ def main():
     # Load tables from SQL Server
 
     ########################################
-    #Break large table into chunks by trait#
+    #Break large table into chunks by trait
     ########################################
     ukbb_lipid_a               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'statin_usage' ", sql_conn)
     ukbb_lipid_b               = pd.read_sql("SELECT * FROM Lipid_UKBB_lipid_trait_Neale where trait = 'self_reported_high_cholesterol_male' ", sql_conn)
@@ -180,6 +180,7 @@ def main():
 
         # Construct empty dataframe
         df = pd.DataFrame(columns=["bp", "chr", "beta", "p_value", "trait", "table_name"])
+        df.append(pd.DataFrame(data).reindex(columns=df.columns))
 
         # Table dictionary
         table_dic = {1:[giant,"giant"], 2:[japanese,"japanese"], 3:[ukbb_bmi,"ukbb_bmi"], 4:[surakka,"surakka"], 5:[east_asian,"east_asian"], 6:[european,"european"], 7:[glgc,"glgc"], 8:[lipid_japanese,"lipid_japanese"],9:[lipid_mvp,"lipid_mvp"], 10:[lipid_spracklen,"lipid_spracklen"], 11:[high_chol,"high_chol"], 12:[ukbb_lipid,"ukbb_lipid"], 13:[ukbb_statin,"ukbb_statin"]}

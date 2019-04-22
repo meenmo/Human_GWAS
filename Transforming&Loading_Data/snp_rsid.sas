@@ -38,7 +38,7 @@ run;
 proc sql;
 	create table sasdata.data01_snp as
 	select a.id, a.chr, b.start, a.bp, b.end, a.maf, a.p_values, a.beta, a.varbeta, b.rsid
-	from data01 a 
+	from data01(obs=1000) a 
 	left join hg19_snp b 
 	on b.start <= a.bp <= b.end
 	order by id;
