@@ -12,7 +12,7 @@ CREATE PROCEDURE cross_ref @gene varchar(20), @margin numeric
          [dbo].[Lipid_Japanese_lipid_trait_Kanai_NG] as b
   WHERE  (a.gene_name = @gene) and (a.chr = b.chr) and (b.bp between a.chr_start-@margin and a.chr_end+@margin)
 
-                         UNION	
+                         UNION
 
   SELECT a.gene_name, a.chr_start-@margin as adj_chr_start, b.bp, a.chr_end+@margin as adj_chr_end,
          b.chr, b.beta, b.p_value, b.trait,
@@ -61,7 +61,8 @@ CREATE PROCEDURE cross_ref @gene varchar(20), @margin numeric
                          UNION
 
   SELECT a.gene_name, a.chr_start-@margin as adj_chr_start, g.bp, a.chr_end+@margin as adj_chr_end,
-         g.chr, g.beta, g.p_value, g.trait
+         g.chr, g.beta, g.p_value, g.trait,
+         'Lipid_GLGC_Exome_Liu_NG' as g
   FROM   [dbo].[hg19] as a,
          [dbo].[Lipid_GLGC_Exome_Liu_NG] as g
   WHERE  (a.gene_name = @gene) and  (a.chr = g.chr) and (g.bp between a.chr_start-@margin and a.chr_end+@margin)
@@ -114,7 +115,7 @@ CREATE PROCEDURE cross_ref @gene varchar(20), @margin numeric
          'Lipid_UKBB_statin_usage' as TableName
   FROM   [dbo].[hg19] as a,
          [dbo].[Lipid_UKBB_statin_usage_Neale] as m
-  WHERE  (a.gene_name = @gene) and (a.chr = m.chr)and (m.bp between a.chr_start-@margin and a.chr_end+@margin)
+  WHERE  (a.gene_name = @gene) and (a.chr = m.chr) and (m.bp between a.chr_start-@margin and a.chr_end+@margin)
 
                            UNION
 
@@ -124,4 +125,4 @@ CREATE PROCEDURE cross_ref @gene varchar(20), @margin numeric
 		     'Japanese_lipid_Trait' as TableName
   FROM   [dbo].[hg19] as a,
          [dbo].[Lipid_Japanese_lipid_trait_Kanai_NG]as n
-  WHERE  (a.gene_name = @gene) and (a.chr = n.chr)and (n.bp between a.chr_start-@margin and a.chr_end+@margin)
+  WHERE  (a.gene_name = @gene) and (a.chr = n.chr) and (n.bp between a.chr_start-@margin and a.chr_end+@margin)
