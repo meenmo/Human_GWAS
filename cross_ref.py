@@ -110,161 +110,214 @@ def get_chr():
     return([str(i) for i in chosen_chr])
 
 
+def where(chosen_chr, cutoff):
+    where = "("
+    for chr in chosen_chr:
+        where += "chr = \'%s\' " %(chr)
+
+        if chosen_chr.index(chr) != len(chosen_chr)-1:
+            where += "or "
+
+    where += ") and (p_value < %f)" %(cutoff)
+
+    return(where)
+
+
+def df(sql_conn, chosen_table, chosen_chr, margin, cutoff):
+    df_temp = pd.DataFrame(columns=["chr", "bp", "beta", "p_value", "trait", "table_name"])
+    for i in chosen_table:
+        ct = 1
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'giant' as table_name FROM BMI_giant_bmi WHERE "
+            query += where(chosen_chr,cutoff)
+            giant = pd.read_sql(query, sql_conn)
+            giant = giant.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(giant)
+            continue
+
+
+        ct += 1
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'japanese_bmi' as table_name FROM BMI_japanese_bmi WHERE "
+            query +=where(chosen_chr,cutoff)
+            japanese = pd.read_sql(query, sql_conn)
+            japanese = japanese.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(japanese)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'bmi_ukbb' as table_name FROM BMI_ukbb_bmi_Neale WHERE "
+            query +=where(chosen_chr,cutoff)
+            ukbb_bmi = pd.read_sql(query, sql_conn)
+            ukbb_bmi = ukbb_bmi.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(ukbb_bmi)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'surakka' as table_name FROM Lipid_Engage_Surakka_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            surakka = pd.read_sql(query, sql_conn)
+            surakka = surakka.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(surakka)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'east_asian' as table_name FROM Lipid_Exome_Lu_East_Asian_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            east_asian = pd.read_sql(query, sql_conn)
+            east_asian = east_asian.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(east_asian)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'european' as table_name FROM Lipid_Exome_Lu_European_and_East_Asian_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            european = pd.read_sql(query, sql_conn)
+            european = european.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(european)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'glgc' as table_name FROM Lipid_GLGC_Willer_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            glgc = pd.read_sql(query, sql_conn)
+            glgc = glgc.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(glgc)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'japanese_lipid' as table_name FROM Lipid_Japanese_lipid_trait_Kanai_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            lipid_japanese = pd.read_sql(query, sql_conn)
+            lipid_japanese = lipid_japanese.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(lipid_japanese)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'lipid_mvp' as table_name FROM Lipid_MVP_Klarin_NG WHERE "
+            query +=where(chosen_chr,cutoff)
+            lipid_mvp = pd.read_sql(query, sql_conn)
+            lipid_mvp = lipid_mvp.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(lipid_mvp)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'lipid_spracklen' as table_name FROM Lipid_Spracklen_Hum_Mol_Genetics WHERE "
+            query +=where(chosen_chr,cutoff)
+            lipid_spracklen = pd.read_sql(query, sql_conn)
+            lipid_spracklen = lipid_spracklen.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(lipid_spracklen)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'high_chol' as table_name FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup WHERE "
+            query +=where(chosen_chr,cutoff)
+            high_chol = pd.read_sql(query, sql_conn)
+            high_chol = high_chol.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(high_chol)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'ukbb_lipid_trait' as table_name FROM Lipid_UKBB_lipid_trait_Neale WHERE "
+            query +=where(chosen_chr,cutoff)
+            ukbb_lipid_trait = pd.read_sql(query, sql_conn)
+            ukbb_lipid_trait = ukbb_lipid_trait.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(ukbb_lipid_trait)
+            continue
+        ct += 1
+
+        if ct == i:
+            query = "SELECT chr, bp, beta, p_value, trait, 'ukbb_statin' as table_name FROM Lipid_UKBB_statin_usage_Neale WHERE "
+            query +=where(chosen_chr,cutoff)
+            ukbb_statin = pd.read_sql(query, sql_conn)
+            ukbb_statin = ukbb_statin.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
+            df_temp = df_temp.append(ukbb_statin)
+            continue
+
+    return(df_temp)
+
+
 def main():
     # Connect to SQL Server
-    sql_conn =  pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=PARKSLAB;DATABASE=Human_GWAS;Trusted_Connection=Yes')
+    sql_conn =  pyodbc.connect("""
+                               DRIVER={ODBC Driver 11 for SQL Server};
+                               SERVER=PARKSLAB;
+                               DATABASE=Human_GWAS;
+                               Trusted_Connection=Yes;
+                               """)
 
     while True:
         # Input for which tables&chromosome to include and gene name and margin(+/-)
         chosen_table = get_table()
         print('')
+
         chosen_chr   = get_chr()
         print('')
+
         gene_name    = input("Type gene name: ").lower()
         print('')
+
         margin       = int(input("Enter your margin: "))
         print('')
 
-        query_hg19 = """
-                     SELECT *, 'hg19' as table_name
-                     FROM hg19
-                     WHERE """ %(    )
+        cutoff       = float(input("Enter the cutoff for P-value: "))
 
-        # This is to concatenate where condition based on chosen_chr
+
+        #######################################
+        ##Load hg19 selecting only chosen chr##
+        #######################################
+        where = "("
         for chr in chosen_chr:
-            query_hg19 += "chr = \'%s\' "
+            where += "chr = \'%s\' " %(chr)
 
-            if list.index(chr) != len(chosen_chr)-1:
-                query_hg19 += "or "
+            if chosen_chr.index(chr) != len(chosen_chr)-1:
+                where += "or "
+        where += ")"
+
+        where +=     """
+                     and (gene_name = \'%s\')
+                     """ %(gene_name)
+
+
+        query_hg19 = """
+                     SELECT chr, gene_name, chr_start - %d as 'adj_chr_start',
+                            chr_end + %d as 'adj_chr_end', 'hg19' as table_name
+                     FROM hg19
+                     WHERE """ %(margin, margin) + where
 
 
         hg19 = pd.read_sql(query_hg19, sql_conn)
-        # Make all gene names to be lower case
-        hg19['gene_name'] = hg19['gene_name'].str.lower()
-        # The starting and end location of chromosome of corresponding gene name under hg19
-        start = min(hg19.loc[(hg19['gene_name']==gene_name)]['chr_start']) - margin
-        end   = max(hg19.loc[(hg19['gene_name']==gene_name)]['chr_end']) + margin
+        hg19 = hg19.astype({"chr": "category","adj_chr_start": "int64", "adj_chr_end": "int64", "table_name": "category"})
 
-        table_dic = {}
-        for i in chosen_table:
-            ct = 1
+        df_all= df(sql_conn, chosen_table, chosen_chr, margin, cutoff)
 
-            if ct == i:
-                giant = pd.read_sql("SELECT *, 'giant' as table_name FROM BMI_giant_bmi", sql_conn)
-                table_dic[ct] = [giant, "giant"]
-                continue
-            ct += 1
-
-            if ct == i:
-                japanese = pd.read_sql("SELECT TOP 500 *, 'japanese_bmi' as table_name FROM BMI_japanese_bmi", sql_conn)
-                table_dic[ct] = [japanese,"japanese"]
-                continue
-            ct += 1
-
-            if ct == i:
-                ukbb_bmi = pd.read_sql("SELECT TOP 500 *, 'bmi_ukbb' as table_name FROM BMI_ukbb_bmi_Neale", sql_conn)
-                table_dic[ct] = [ukbb_bmi,"ukbb_bmi"]
-                continue
-            ct += 1
-
-            if ct == i:
-                surakka = pd.read_sql("SELECT TOP 500 *, 'surakka' as table_name FROM Lipid_Engage_Surakka_NG", sql_conn)
-                table_dic[ct] = [surakka,"surakka"]
-                continue
-            ct += 1
-
-            if ct == i:
-                east_asian = pd.read_sql("SELECT TOP 500 *, 'east_asian' as table_name FROM Lipid_Exome_Lu_East_Asian_NG", sql_conn)
-                table_dic[ct] = [east_asian,"east_asian"]
-                continue
-            ct += 1
-
-            if ct == i:
-                european = pd.read_sql("SELECT TOP 500 *, 'european' as table_name FROM Lipid_Exome_Lu_European_and_East_Asian_NG", sql_conn)
-                table_dic[ct] = [european,"european"]
-                continue
-            ct += 1
-
-            if ct == i:
-                glgc = pd.read_sql("SELECT TOP 500 *, 'glgc' as table_name FROM Lipid_GLGC_Willer_NG", sql_conn)
-                table_dic[ct] = [glgc,"glgc"]
-                continue
-            ct += 1
-
-            if ct == i:
-                lipid_japanese = pd.read_sql("SELECT TOP 500 *, 'japanese_lipid' as table_name FROM Lipid_Japanese_lipid_trait_Kanai_NG", sql_conn)
-                table_dic[ct] = [lipid_japanese,"lipid_japanese"]
-                continue
-            ct += 1
-
-            if ct == i:
-                lipid_mvp = pd.read_sql("SELECT TOP 500 *, 'lipid_mvp' as table_name FROM Lipid_MVP_Klarin_NG", sql_conn)
-                table_dic[ct] = [lipid_mvp,"lipid_mvp"]
-                continue
-            ct += 1
-
-            if ct == i:
-                lipid_spracklen = pd.read_sql("SELECT TOP 500 *, 'lipid_spracklen' as table_name FROM Lipid_Spracklen_Hum_Mol_Genetics", sql_conn)
-                table_dic[ct] = [lipid_spracklen,"lipid_spracklen"]
-                continue
-            ct += 1
-
-            if ct == i:
-                high_chol = pd.read_sql("SELECT TOP 500 *, 'high_chol' as table_name FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup", sql_conn)
-                table_dic[ct] = [high_chol,"high_chol"]
-                continue
-            ct += 1
-
-            if ct == i:
-                ukbb_lipid_trait = pd.read_sql("SELECT TOP 500 *, 'ukbb_lipid_trait' as table_name FROM Lipid_UKBB_lipid_trait_Neale", sql_conn)
-                table_dic[ct] = [ukbb_lipid_trait,"ukbb_lipid_trait"]
-                continue
-            ct += 1
-
-            if ct == i:
-                ukbb_statin = pd.read_sql("SELECT TOP 500 *, 'ukbb_statin' as table_name FROM Lipid_UKBB_statin_usage_Neale", sql_conn)
-                table_dic[ct] = [ukbb_statin,"ukbb_statin"]
-                continue
-        # Construct empty dataframe
-        df = pd.DataFrame(columns=["bp", "chr", "beta", "p_value", "trait", "table_name"])
-        #df.append(pd.DataFrame(data).reindex(columns=df.columns))
-
-        # Table dictionary
+        #hg19.sort_index(inplace=True)
+        start = hg19['adj_chr_start']
+        end   = hg19['adj_chr_end']
 
 
-        for i in chosen_table:
-            try:
-                table      = table_dic[i][0]
-                table_name = table_dic[i][1]
+        # a = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['chr'].to_frame()
+        # b = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['chr'].to_frame()
+        # c = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['beta'].to_frame()
+        # d = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['p_value'].to_frame()
+        # e = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['trait'].to_frame()
+        # f = df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)]['table_name'].to_frame()
+        #
+        #
+        # return(a.join(b).join(c).join(d).join(e))
 
-                #Add a column named 'table_name' whose values are corresponding table name
-                table["table_name"] = table_name
-
-                #each column that satisfies the conditions.
-                a = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['bp'].to_frame()
-                b = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['chr'].to_frame()
-                c = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['beta'].to_frame()
-                d = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['p_value'].to_frame()
-                e = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['trait'].to_frame()
-                f = table.loc[(start <= table['bp']) & (table['bp'] <= end) & (table['chr'].isin(chosen_chr))]['table_name'].to_frame()
-
-                # merge these all together
-                df_temp   = a.join(b).join(c).join(d).join(e)
-                # .join(f)
-
-                #append to the existing df
-                df        = df.append(df_temp)
-
-                #cast 'bp' column to int
-                df['bp']  = df['bp'].astype(int)
-                df['chr'] = df['chr'].astype(int)
-
-            except TypeError:
-                continue
-
-        print(df)
-        print('')
-
+        #df_all.sort_index(inplace=True)
+        return(df_all.loc[(start <= df_all['bp']) & (df_all['bp'] <= end)])
 
 
 if __name__ == "__main__":
