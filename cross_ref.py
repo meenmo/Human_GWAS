@@ -11,7 +11,7 @@ def error_messeage():
 
 def get_table():
 # 
-# This function is to get a 'list' containing the 'numbers' corresponding to each table from user
+# This function is to get a 'list' containing the numbers corresponding to each table from user
 # 
     while True:
         #prompt to get input which table to include
