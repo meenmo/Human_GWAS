@@ -320,18 +320,19 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
     return(df)
 
 
-def get_hg19(sql_conn, chosen_chr, gene_name, margin):
+def get_hg19(sql_conn, gene_name, margin):
 # This will spits out 'hg19' table with chosen chromosome and gene_name
 
-    where = "("
-    for chr in chosen_chr:
-        where += "chr = \'%s\' " %(chr)
+#     for chr in chosen_chr:
+#         where += "chr = \'%s\' " %(chr)
 
-        if chosen_chr.index(chr) != len(chosen_chr)-1:
-            where += "or "
+#         if chosen_chr.index(chr) != len(chosen_chr)-1:
+#             where += "or "
 
+    # where += ") and ("
+    
     # concatenating a condition regarding 'gene_name'
-    where += ") and ("
+    where = "("
     for gene_i in gene_name:
         where      += "gene_name = \'%s\'" %(gene_i)
 
@@ -357,14 +358,12 @@ def get_hg19(sql_conn, chosen_chr, gene_name, margin):
 def save_option(df_all):
     option = input("""How do you want to save this result?
 1. Save as csv file
-2. Upload to the SERVER
-3. Nothing:\n""")
+2. Nothing:\n""")
     while option not in ['1','2','3']:
         print("Enter a valid input\n")
         option = input("""How do you want to save this result?
 1. Save as csv file
-2. Upload to the SERVER
-3. Nothing:\n""")
+2. Nothing:\n""")
 
     try:
         if option == '1':
@@ -390,9 +389,11 @@ def main():
         chosen_table = get_table()
         print('')
 
-        chosen_chr   = get_chr()
-        print('')
+#         chosen_chr   = get_chr()
+#         print('')
+        
         # please put your file path
+        
         gene_name    = get_genename()
         print('')
 
@@ -402,7 +403,7 @@ def main():
         cutoff       = get_pvalue()
 
 
-        hg19 = get_hg19(sql_conn, chosen_chr, gene_name, margin)
+        hg19 = get_hg19(sql_conn, gene_name, margin)
         df_all= df(sql_conn, hg19, chosen_table, margin, cutoff)
 
         print(df_all.to_string())
