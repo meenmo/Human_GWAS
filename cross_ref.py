@@ -29,9 +29,11 @@ Which tables do you want to include?\n
 10.Lipid_Spracklen_Hum_Mol_Genetics
 11.Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup
 12.Lipid_UKBB_lipid_trait_Neale
-13.Lipid_UKBB_statin_usage_Neale\n
-Enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5
-If you want to choose all tables, just press enter *.\n""")
+13.Lipid_UKBB_statin_usage_Neale
+
+Press enter to include all tables.
+Otherwise, enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5
+""")
 
         #Obtain index of chosen tables as a list
         try:
@@ -73,7 +75,10 @@ def get_chr():
 # This function is to get a 'list' of chromosome to be included from user
 
     while True:
-        choose_chr = input("Press enter to include all chromosomes. Otherwise, enter chromosomes you want to include separate by comma.:\n")
+        choose_chr = input("""
+Press enter to include all chromosomes. 
+Otherwise, enter chromosomes you want to include separate by comma.:\n""")
+
         # Valid input list for chromosome
         chr_list   = list(range(1,24))
 
@@ -129,7 +134,6 @@ def get_margin():
 def get_genename():
     gene_name    = input("Type gene name: ").lower()
 
-
     if ',' in gene_name:
         print('yes')
         return(list(set([i.replace(' ','') for i in gene_name.split(",")])))
@@ -152,7 +156,6 @@ def get_pvalue():
     return(cutoff)
 
 
-
 def where(hg19,cutoff):
     chr_list = list(set(hg19['chr'].tolist()))
     where = "("
@@ -172,6 +175,7 @@ def where(hg19,cutoff):
     where += ") and (p_value < %f)" %(cutoff)
 
     return(where)
+
 
 def where_varchar(hg19, cutoff):
 # This function is exactly same as 'def where'
@@ -201,17 +205,16 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
     for i in chosen_table:
         ct = 1
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'giant' as table_name FROM BMI_giant_bmi WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'BMI_giant_bmi' as table_name FROM BMI_giant_bmi WHERE "
             query += where(hg19,cutoff)
             giant = pd.read_sql(query, sql_conn)
             giant = giant.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
             df = df.append(giant)
             continue
 
-
         ct += 1
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'japanese_bmi' as table_name FROM BMI_japanese_bmi WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'BMI_japanese_bmi' as table_name FROM BMI_japanese_bmi WHERE "
             query +=where(hg19,cutoff)
             japanese = pd.read_sql(query, sql_conn)
             japanese = japanese.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -220,7 +223,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'bmi_ukbb' as table_name FROM BMI_ukbb_bmi_Neale WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'BMI_ukbb_bmi_Neale' as table_name FROM BMI_ukbb_bmi_Neale WHERE "
             query +=where(hg19,cutoff)
             ukbb_bmi = pd.read_sql(query, sql_conn)
             ukbb_bmi = ukbb_bmi.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -229,7 +232,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'surakka' as table_name FROM Lipid_Engage_Surakka_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_Engage_Surakka_NG' as table_name FROM Lipid_Engage_Surakka_NG WHERE "
             query += where_varchar(hg19, cutoff)
             surakka = pd.read_sql(query, sql_conn)
             surakka = surakka.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -238,7 +241,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'east_asian' as table_name FROM Lipid_Exome_Lu_East_Asian_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_Exome_Lu_East_Asian_NG' as table_name FROM Lipid_Exome_Lu_East_Asian_NG WHERE "
             query +=where(hg19,cutoff)
             east_asian = pd.read_sql(query, sql_conn)
             east_asian = east_asian.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -247,7 +250,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'european' as table_name FROM Lipid_Exome_Lu_European_and_East_Asian_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_Exome_Lu_European_and_East_Asian_NG' as table_name FROM Lipid_Exome_Lu_European_and_East_Asian_NG WHERE "
             query +=where(hg19,cutoff)
             european = pd.read_sql(query, sql_conn)
             european = european.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -256,7 +259,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'glgc' as table_name FROM Lipid_GLGC_Willer_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_GLGC_Willer_NG' as table_name FROM Lipid_GLGC_Willer_NG WHERE "
             query +=where(hg19,cutoff)
             glgc = pd.read_sql(query, sql_conn)
             glgc = glgc.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -265,7 +268,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'japanese_lipid' as table_name FROM Lipid_Japanese_lipid_trait_Kanai_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_Japanese_lipid_trait_Kanai_NG' as table_name FROM Lipid_Japanese_lipid_trait_Kanai_NG WHERE "
             query +=where_varchar(hg19,cutoff)
             lipid_japanese = pd.read_sql(query, sql_conn)
             lipid_japanese = lipid_japanese.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -274,7 +277,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'lipid_mvp' as table_name FROM Lipid_MVP_Klarin_NG WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_MVP_Klarin_NG' as table_name FROM Lipid_MVP_Klarin_NG WHERE "
             query +=where(hg19,cutoff)
             lipid_mvp = pd.read_sql(query, sql_conn)
             lipid_mvp = lipid_mvp.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -283,7 +286,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'lipid_spracklen' as table_name FROM Lipid_Spracklen_Hum_Mol_Genetics WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_Spracklen_Hum_Mol_Genetics' as table_name FROM Lipid_Spracklen_Hum_Mol_Genetics WHERE "
             query +=where_varchar(hg19,cutoff)
             lipid_spracklen = pd.read_sql(query, sql_conn)
             lipid_spracklen = lipid_spracklen.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -292,7 +295,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'high_chol' as table_name FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup' as table_name FROM Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup WHERE "
             query +=where_varchar(hg19,cutoff)
             high_chol = pd.read_sql(query, sql_conn)
             high_chol = high_chol.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -301,7 +304,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'ukbb_lipid_trait' as table_name FROM Lipid_UKBB_lipid_trait_Neale WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_UKBB_lipid_trait_Neale' as table_name FROM Lipid_UKBB_lipid_trait_Neale WHERE "
             query +=where(hg19,cutoff)
             ukbb_lipid_trait = pd.read_sql(query, sql_conn)
             ukbb_lipid_trait = ukbb_lipid_trait.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -310,7 +313,7 @@ def df(sql_conn, hg19, chosen_table, margin, cutoff):
         ct += 1
 
         if ct == i:
-            query = "SELECT chr, bp, beta, p_value, trait, 'ukbb_statin' as table_name FROM Lipid_UKBB_statin_usage_Neale WHERE "
+            query = "SELECT chr, bp, beta, p_value, trait, 'Lipid_UKBB_statin_usage_Neale' as table_name FROM Lipid_UKBB_statin_usage_Neale WHERE "
             query +=where(hg19,cutoff)
             ukbb_statin = pd.read_sql(query, sql_conn)
             ukbb_statin = ukbb_statin.astype({"chr": "category", "bp": "int64", "beta": "float64",  "p_value": "float64", "table_name": "category"})
@@ -408,8 +411,6 @@ def main():
 
         print(df_all.to_string())
         save_option(df_all)
-
-
 
 
 if __name__ == "__main__":
