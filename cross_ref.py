@@ -200,7 +200,7 @@ def where_varchar(hg19, cutoff):
     return(where)
 
 
-def df(sql_conn, hg19, chosen_table, margin, cutoff):
+def get_df(sql_conn, hg19, chosen_table, margin, cutoff):
     df = pd.DataFrame(columns=["chr", "bp", "beta", "p_value", "trait", "table_name"])
     for i in chosen_table:
         ct = 1
@@ -358,7 +358,7 @@ def get_hg19(sql_conn, gene_name, margin):
     return(hg19)
 
 
-def save_option(df_all):
+def save_option(df):
     option = input("""How do you want to save this result?
 1. Save as csv file
 2. Nothing:\n""")
@@ -371,7 +371,7 @@ def save_option(df_all):
     try:
         if option == '1':
             path = 'E:/cross_ref/cross_ref.csv'
-            df_all.to_csv(path, encoding = 'utf-8', index=False)
+            df.to_csv(path, encoding = 'utf-8', index=False)
             os.startfile(path)
 
     except PermissionError:
@@ -407,10 +407,10 @@ def main():
 
 
         hg19 = get_hg19(sql_conn, gene_name, margin)
-        df_all= df(sql_conn, hg19, chosen_table, margin, cutoff)
+        df   = get_df(sql_conn, hg19, chosen_table, margin, cutoff)
 
-        print(df_all.to_string())
-        save_option(df_all)
+        print(df.to_string())
+        save_option(df)
 
 
 if __name__ == "__main__":
