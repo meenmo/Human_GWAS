@@ -1,4 +1,6 @@
+from sqlalchemy import create_engine
 import pandas as pd
+import urllib
 import pyodbc
 import os
 
@@ -76,7 +78,7 @@ def get_chr():
 
     while True:
         choose_chr = input("""
-Press "ENTER' to include all chromosomes. 
+Press "ENTER' to include all chromosomes.
 Otherwise, enter chromosomes you want to include separate by comma.:\n""")
 
         # Valid input list for chromosome
@@ -120,19 +122,25 @@ Otherwise, enter chromosomes you want to include separate by comma.:\n""")
 
 
 def get_margin():
-    defaultMarg = 200000
+
     while True:
         try:
-            margin = int(input("Enter your margin...(Input 0 to use default value of 200,000):"))
-            if margin == defaultMarg:
-                break
+            margin_input = input("""
+Press just 'ENTER' to use default value of 200,000.
+Otherwise, specify your margin:""")
+
+            if margin_input == '':
+                return(200000)
+
             else:
-                 break
+                margin = int(margin_input)
+                break
 
         except ValueError:
             print('Enter a valid input.\n')
 
     return(margin)
+
 
 def get_genename():
     gene_name    = input("Type gene name: ").lower()
@@ -146,21 +154,35 @@ def get_genename():
 
 
 def get_pvalue():
-    default = 0.5
 
-    cutoff = float(input("Enter the cutoff for p-value...(Input 0 to use the default value of 0.5):"))
-    while cutoff == default:
-        break
-    while (cutoff<0) or (cutoff > 1):
+    cutoff = input("""
+Press just 'ENTER' to use the default value of 0.05.
+Otherwise, specify the cutoff for p-value:\n""")
+
+    if cutoff == '' :
+        return(0.05)
+
+
+    while True:
+
         try:
-            print('Enter a valid input.\n')
-            cutoff = float(input("Enter the cutoff for p-value...(Input 0 to use the default value of 0.5):"))
-            break
+            cutoff = float(cutoff)
+            while (cutoff < 0) or (cutoff > 1):
+                print('Enter a valid input.\n')
+                cutoff = float(input("""
+Press just 'ENTER' to use the default value of 0.05.\n
+Otherwise, specify the cutoff for p-value:\n"""))
+
+
+
 
         except ValueError:
             print('Enter a valid input.\n')
+            cutoff = input("""
+Press just 'ENTER' to use the default value of 0.05.\n
+Otherwise, specify the cutoff for p-value:\n""")
 
-    return(cutoff)
+        return(cutoff)
 
 
 def where(hg19,cutoff):
@@ -205,6 +227,41 @@ def where_varchar(hg19, cutoff):
     where += ") and (p_value < \'%f\')" %(cutoff)
 
     return(where)
+
+
+def get_hg19(sql_conn, gene_name, margin):
+# This will spits out 'hg19' table with chosen chromosome and gene_name
+
+#     for chr in chosen_chr:
+#         where += "chr = \'%s\' " %(chr)
+
+#         if chosen_chr.index(chr) != len(chosen_chr)-1:
+#             where += "or "
+
+    # where += ") and ("
+
+    # concatenating a condition regarding 'gene_name'
+    where = "("
+    for gene_i in gene_name:
+        where      += "gene_name = \'%s\'" %(gene_i)
+
+        if gene_name.index(gene_i) != len(gene_name)-1:
+            where += "or "
+
+    where += ")"
+
+    # concatenating 'where' statement and modify the interval of 'chr_start' and 'chr_end'
+    query_hg19 = """
+                 SELECT chr, gene_name, chr_start - %d as 'adj_chr_start',
+                        chr_end + %d as 'adj_chr_end', 'hg19' as table_name
+                 FROM hg19
+                 WHERE """ %(margin, margin) + where
+
+
+    hg19 = pd.read_sql(query_hg19, sql_conn)
+    hg19 = hg19.astype({"chr": "category","adj_chr_start": "int64", "adj_chr_end": "int64", "table_name": "category"})
+
+    return(hg19)
 
 
 def get_df(sql_conn, hg19, chosen_table, margin, cutoff):
@@ -330,56 +387,27 @@ def get_df(sql_conn, hg19, chosen_table, margin, cutoff):
     return(df)
 
 
-def get_hg19(sql_conn, gene_name, margin):
-# This will spits out 'hg19' table with chosen chromosome and gene_name
-
-#     for chr in chosen_chr:
-#         where += "chr = \'%s\' " %(chr)
-
-#         if chosen_chr.index(chr) != len(chosen_chr)-1:
-#             where += "or "
-
-    # where += ") and ("
-    
-    # concatenating a condition regarding 'gene_name'
-    where = "("
-    for gene_i in gene_name:
-        where      += "gene_name = \'%s\'" %(gene_i)
-
-        if gene_name.index(gene_i) != len(gene_name)-1:
-            where += "or "
-
-    where += ")"
-
-    # concatenating 'where' statement and modify the interval of 'chr_start' and 'chr_end'
-    query_hg19 = """
-                 SELECT chr, gene_name, chr_start - %d as 'adj_chr_start',
-                        chr_end + %d as 'adj_chr_end', 'hg19' as table_name
-                 FROM hg19
-                 WHERE """ %(margin, margin) + where
-
-
-    hg19 = pd.read_sql(query_hg19, sql_conn)
-    hg19 = hg19.astype({"chr": "category","adj_chr_start": "int64", "adj_chr_end": "int64", "table_name": "category"})
-
-    return(hg19)
-
-
-def save_option(df):
+def save_option(df, sql_conn):
     option = input("""How do you want to save this result?
 1. Save as csv file
-2. Nothing:\n""")
+2. Push to SQL Server
+3. Nothing:\n""")
     while option not in ['1','2','3']:
         print("Enter a valid input\n")
         option = input("""How do you want to save this result?
 1. Save as csv file
-2. Nothing:\n""")
+2. Push to SQL Server
+3. Nothing:\n""")
 
     try:
         if option == '1':
             path = 'E:/cross_ref/cross_ref.csv'
             df.to_csv(path, encoding = 'utf-8', index=False)
             os.startfile(path)
+
+        if option == '2':
+            engine = create_engine('mssql+pyodbc://scott:tiger@mydsn')
+            df.to_sql(name='cross_ref', schema='dbo', con=engine, if_exists='replace',index=False)
 
     except PermissionError:
         print('Close the csv file currently opened and try again')
@@ -401,9 +429,7 @@ def main():
 
 #         chosen_chr   = get_chr()
 #         print('')
-        
-        # please put your file path
-        
+
         gene_name    = get_genename()
         print('')
 
@@ -416,8 +442,10 @@ def main():
         hg19 = get_hg19(sql_conn, gene_name, margin)
         df   = get_df(sql_conn, hg19, chosen_table, margin, cutoff)
 
+
         print(df.to_string())
-        save_option(df)
+
+        save_option(df,sql_conn)
 
 
 if __name__ == "__main__":
