@@ -118,11 +118,13 @@ def get_margin():
     defaultMarg = 200000
     while True:
         try:
-            margin = int(input("Enter your margin...(Input 0 to use default value of 200,000):"))
-            if margin == defaultMarg:
-                break
+            margin_input = input("Enter your margin...(press enter to use default value of 200,000):")
+            if margin_input == '':
+                return defaultMarg
+
             else:
-                 break
+                margin = int (margin_input)
+                break
 
         except ValueError:
             print('Enter a valid input.\n')
@@ -142,15 +144,17 @@ def get_genename():
 
 
 def get_pvalue():
-    default = 0.5
 
-    cutoff = float(input("Enter the cutoff for p-value...(Input 0 to use the default value of 0.5):"))
-    while cutoff == default:
-        break
+    default_pvalue = 0.05
+
+    cutoff_input = input("Enter the cutoff for p-value: (press enter to use the default value of 0.05")
+    if cutoff_input == '' :
+        return default_pvalue
+    cutoff = float (cutoff_input)
     while (cutoff<0) or (cutoff > 1):
         try:
             print('Enter a valid input.\n')
-            cutoff = float(input("Enter the cutoff for p-value...(Input 0 to use the default value of 0.5):"))
+            cutoff = float(input("Enter the cutoff for p-value: "))
             break
 
         except ValueError:
@@ -403,18 +407,17 @@ def main():
         gene_name    = get_genename()
         print('')
 
-        margin       = get_margin()
+        margin       = get_margin ()
         print('')
 
         cutoff       = get_pvalue()
 
 
         hg19 = get_hg19(sql_conn, chosen_chr, gene_name, margin)
-        df_all= df(sql_conn, hg19, chosen_table, margin, cutoff)
+        df_all= df(sql_conn,hg19, chosen_table, margin, cutoff)
 
         print(df_all.to_string())
         save_option(df_all)
-
 
 
 
