@@ -31,7 +31,7 @@ Which tables do you want to include?\n
 12.Lipid_UKBB_lipid_trait_Neale
 13.Lipid_UKBB_statin_usage_Neale
 
-Press enter to include all tables.
+Press 'ENTER' to include all tables.
 Otherwise, enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5
 """)
 
@@ -76,7 +76,7 @@ def get_chr():
 
     while True:
         choose_chr = input("""
-Press enter to include all chromosomes. 
+Press "ENTER' to include all chromosomes. 
 Otherwise, enter chromosomes you want to include separate by comma.:\n""")
 
         # Valid input list for chromosome
