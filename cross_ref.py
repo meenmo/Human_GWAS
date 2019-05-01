@@ -242,11 +242,11 @@ def get_hg19(sql_conn, gene_name, margin):
 
     # concatenating a condition regarding 'gene_name'
     where = "("
-    for gene_i in gene_name:
-        where      += "gene_name = \'%s\'" %(gene_i)
+#     for gene_i in gene_name:
+    where      += "gene_name = \'%s\'" %(gene_name)
 
-        if gene_name.index(gene_i) != len(gene_name)-1:
-            where += "or "
+#         if gene_name.index(gene_i) != len(gene_name)-1:
+#             where += "or "
 
     where += ")"
 
@@ -430,18 +430,20 @@ def main():
 #         chosen_chr   = get_chr()
 #         print('')
 
-        gene_name    = get_genename()
+        gene_name_list = get_genename()
         print('')
 
-        margin       = get_margin()
+        margin         = get_margin()
         print('')
 
-        cutoff       = get_pvalue()
-
-
-        hg19 = get_hg19(sql_conn, gene_name, margin)
-        df   = get_df(sql_conn, hg19, chosen_table, margin, cutoff)
-
+        cutoff         = get_pvalue()
+        
+        df = pd.DataFrame(columns=["chr", "bp", "beta", "p_value", "trait", "table_name"])
+        for gene_name in gene_name_list:  
+            hg19 = get_hg19(sql_conn, gene_name, margin)
+            df_temp   = get_df(sql_conn, hg19, chosen_table, margin, cutoff)
+            df_temp['gene_name'] = gene_name
+            df = df.append(df_temp)
 
         print(df.to_string())
 
