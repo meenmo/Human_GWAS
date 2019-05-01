@@ -32,6 +32,8 @@ Which tables do you want to include?\n
 11.Lipid_UKBB_high_cholesterol_ukbb_Connor_alkesgroup
 12.Lipid_UKBB_lipid_trait_Neale
 13.Lipid_UKBB_statin_usage_Neale
+14.Lipid_GLGC_Exome_Liu_NG
+15.Lipid_Korean_Biobank_Chip_Moon_Scientific_report
 
 Press 'ENTER' to include all tables.
 Otherwise, enter the table numbers that you want to include seperataed by comma. e.g.) 1,3,5
@@ -172,9 +174,6 @@ Otherwise, specify the cutoff for p-value:\n""")
                 cutoff = float(input("""
 Press just 'ENTER' to use the default value of 0.05.\n
 Otherwise, specify the cutoff for p-value:\n"""))
-
-
-
 
         except ValueError:
             print('Enter a valid input.\n')
