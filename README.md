@@ -1,4 +1,4 @@
-# This works were done for https://github.com/Parks-Laboratory.
+This works were done for https://github.com/Parks-Laboratory.
 
 # cross_ref.py
 This python program is used for query of interest Human_GWAS lipid genes. Since the size of total tables in the SQL server is huge enough, this program is intended to find only necessary data with the efficient algorithm over dozen of multiple large size tables.
